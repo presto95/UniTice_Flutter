@@ -2,8 +2,6 @@ import 'package:meta/meta.dart';
 
 /// 게시물을 나타낸 모델.
 class Post {
-  // Property
-
   /// 게시물 식별자.
   final String id;
 
@@ -21,8 +19,6 @@ class Post {
 
   /// 게시물 기타 정보.
   final String note;
-
-  // Constructor
 
   Post(
       {@required this.id,
