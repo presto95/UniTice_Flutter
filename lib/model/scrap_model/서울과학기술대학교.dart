@@ -1,6 +1,7 @@
 import 'package:unitice/model/category.dart';
 import 'package:unitice/model/post.dart';
 import 'package:unitice/model/university_type.dart';
+import 'package:unitice/service/scrap_service.dart';
 
 class Seoultech implements UniversityType {
   @override
@@ -81,8 +82,30 @@ class Seoultech implements UniversityType {
   }
 
   @override
-  Future<List<Post>> requestPosts(Category category, int page, String query) {
-    // TODO: implement requestPosts
-    return null;
+  Future<List<Post>> requestPosts(
+      Category category, int page, String query) async {
+    List<Post> posts = [];
+    final url = getPageUrl(category, page, query);
+    final document = await ScrapService.shared.request(url);
+    final rows = document.querySelectorAll("tr.body_tr > td");
+    final links = document.querySelectorAll("td.tit > a[href]");
+    final numberOfLinks = links.length;
+    for (int index = 0; index < numberOfLinks; ++index) {
+      final referenceIndex = index * 6;
+      final number = rows[referenceIndex].text.trim();
+      final title = rows[referenceIndex + 1].text.trim();
+      final date = rows[referenceIndex + 4].text.trim();
+      final link = links[index].attributes["href"].trim();
+      final isNotice = number.isEmpty ? true : false;
+      final post = Post(
+        number: number.isEmpty ? 0 : int.parse(number),
+        title: title,
+        date: date,
+        link: link,
+        isNotice: isNotice,
+      );
+      posts.add(post);
+    }
+    return posts;
   }
 }

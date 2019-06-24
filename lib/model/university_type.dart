@@ -1,5 +1,6 @@
 import 'package:unitice/model/category.dart';
 import 'package:unitice/model/post.dart';
+import 'package:unitice/service/scrap_service.dart';
 
 /// 대학교 파싱 모델을 추상화한 인터페이스.
 abstract class UniversityType {
