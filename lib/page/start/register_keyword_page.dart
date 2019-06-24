@@ -19,12 +19,13 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         body: SafeArea(
-          minimum: EdgeInsets.all(16),
+          minimum: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               _buildPageInformationTexts(),
+              SizedBox(height: 16),
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -55,17 +56,23 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
   }
 
   Widget _buildTextFieldRow(BuildContext context) {
+    final textEditingController = TextEditingController();
     return Row(
       children: <Widget>[
         Flexible(
           child: TextField(
+            controller: textEditingController,
             autofocus: true,
             decoration: InputDecoration(
               labelText: "키워드 입력",
             ),
             keyboardType: TextInputType.text,
             onChanged: (text) => currentKeyword = text,
-            onSubmitted: (text) => _registerKeyword(context, text),
+            onSubmitted: (text) {
+              _registerKeyword(context, text);
+              currentKeyword = "";
+              textEditingController.text = null;
+            },
           ),
         ),
         Container(
@@ -78,9 +85,12 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
             borderRadius: BorderRadius.circular(20),
           ),
           child: FlatButton(
-            child: Text("등록"),
-            onPressed: () => _registerKeyword(context, currentKeyword),
-          ),
+              child: Text("등록"),
+              onPressed: () {
+                _registerKeyword(context, currentKeyword);
+                currentKeyword = "";
+                textEditingController.text = null;
+              }),
         ),
       ],
     );
@@ -91,7 +101,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
       return Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 32,
               vertical: 16,
             ),
@@ -118,7 +128,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     }).toList();
     return Expanded(
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.only(top: 16),
         child: Column(
           children: registeredKeywords,
         ),

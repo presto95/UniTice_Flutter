@@ -12,11 +12,11 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        minimum: EdgeInsets.all(16),
+        minimum: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             _buildPageInformationTexts(),
             _buildPresentationContainer(),
             _buildButtonsContainer(context),
@@ -39,10 +39,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
   }
 
   Widget _buildPresentationContainer() {
-    final presentingKeywords = keywords.isEmpty
-        ? "없음"
-        : keywords.toString();
-
+    final presentingKeywords = keywords.isEmpty ? "없음" : keywords.toString();
     return Flexible(
       child: Center(
         child: Column(
@@ -52,12 +49,14 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
             Column(
               children: <Widget>[
                 _buildContentTitleText("학교"),
+                SizedBox(height: 8),
                 _buildContentItemText(university),
               ],
             ),
             Column(
               children: <Widget>[
                 _buildContentTitleText("키워드"),
+                SizedBox(height: 8),
                 _buildContentItemText(presentingKeywords),
               ],
             ),
@@ -118,6 +117,5 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString("university", university);
     await preferences.setStringList("kerywords", keywords);
-    return Future.value(null);
   }
 }

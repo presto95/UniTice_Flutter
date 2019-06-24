@@ -24,7 +24,7 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             _buildPageInformationTexts(),
             _buildUniversityPickerView(),
             Builder(builder: (context) => _buildButtonsContainer(context)),

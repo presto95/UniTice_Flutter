@@ -18,6 +18,7 @@ class SettingPage extends StatelessWidget {
               _buildSecondSection(context),
               Divider(),
               _buildThirdSection(),
+              Divider(),
             ],
           )
         ],
@@ -96,6 +97,6 @@ class SettingPage extends StatelessWidget {
     final email = Email(
       recipients: const ["yoohan95@gmail.com"],
     );
-    FlutterEmailSender.send(email).then((_) {});
+    FlutterEmailSender.send(email).then((_) {}).catchError((error) {});
   }
 }

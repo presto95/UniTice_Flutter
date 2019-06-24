@@ -5,7 +5,11 @@ class EntryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _presentMainPage(context);
-    return Container();
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+      ),
+    );
   }
 
   void _presentMainPage(BuildContext context) async {

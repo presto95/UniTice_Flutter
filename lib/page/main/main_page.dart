@@ -19,7 +19,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScrapService().initiate();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
