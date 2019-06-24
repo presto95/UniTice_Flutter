@@ -29,7 +29,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    _buildTextFieldRow(),
+                    Builder(builder: (context) => _buildTextFieldRow(context)),
                     _buildKeywordsListView(),
                   ],
                 ),
@@ -54,7 +54,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     );
   }
 
-  Widget _buildTextFieldRow() {
+  Widget _buildTextFieldRow(BuildContext context) {
     return Row(
       children: <Widget>[
         Flexible(
@@ -65,7 +65,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
             ),
             keyboardType: TextInputType.text,
             onChanged: (text) => currentKeyword = text,
-            onSubmitted: (text) => _registerKeyword(text),
+            onSubmitted: (text) => _registerKeyword(context, text),
           ),
         ),
         Container(
@@ -79,7 +79,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
           ),
           child: FlatButton(
             child: Text("등록"),
-            onPressed: () => _registerKeyword(currentKeyword),
+            onPressed: () => _registerKeyword(context, currentKeyword),
           ),
         ),
       ],
@@ -150,41 +150,19 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     );
   }
 
-  void _registerKeyword(String keyword) {
+  void _registerKeyword(BuildContext context, String keyword) {
     final trimmedText = keyword.trim();
     if (trimmedText.isEmpty) {
       return;
     }
     if (keywords.contains(trimmedText)) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("키워드가 중복되었습니다."),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("확인"),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            );
-          });
+      final snackBar = SnackBar(content: Text("키워드가 중복되었습니다."));
+      Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
     if (keywords.length >= 3) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("3개 이상 등록할 수 없습니다."),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text("확인"),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            );
-          });
+      final snackBar = SnackBar(content: Text("3개 이상 등록할 수 없습니다."));
+      Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
     if (!keywords.contains(trimmedText)) {

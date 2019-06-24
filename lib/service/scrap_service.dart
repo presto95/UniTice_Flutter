@@ -7,8 +7,15 @@ class ScrapService {
 
   void initiate() async {
     try {
-      final response = await http.get('http://www.seoultech.ac.kr/service/info/notice/');
-      print(response);
+      final response = await http.get('https://www.seoultech.ac.kr/service/info/matters/?bidx=6112&bnum=6112&allboard=true&size=5');
+      print(response.body);
+      final document = parse(response.body);
+      final links = document.querySelectorAll("div.wrap_list > tr.body_tr > td");
+      print("--------------");
+      links.forEach((link) {
+        print(link.text);
+      });
+      //print(links);
     } catch (error) {
       print(error);
     }

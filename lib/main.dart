@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         "/setting": (context) => SettingPage(),
         "/search": (context) => SearchPage(),
         "/bookmark": (context) => BookmarkPage(),
-        "/start/selectUniversity": (context) => RegisterUniversityPage(),
+        "/start/registerUniversity": (context) => RegisterUniversityPage(),
         "/start/registerKeyword": (context) => RegisterKeywordPage(),
         "/start/confirm": (context) => ConfirmPage(),
         "/setting/changeKeyword": (context) => ChangeKeywordPage(),

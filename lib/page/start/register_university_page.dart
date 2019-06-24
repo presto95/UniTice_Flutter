@@ -7,19 +7,27 @@ import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/widget/start_button.dart';
 
-class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
+class RegisterUniversityPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _RegisterUniversityPageState();
+}
+
+class _RegisterUniversityPageState extends State<RegisterUniversityPage>
+    with StartUiHelper {
+  String selectedUniversity;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        minimum: EdgeInsets.all(16),
+        minimum: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: 20),
             _buildPageInformationTexts(),
-            _buildUniversityListView(),
-            _buildButtonsContainer(context),
+            _buildUniversityPickerView(),
+            Builder(builder: (context) => _buildButtonsContainer(context)),
           ],
         ),
       ),
@@ -46,31 +54,33 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
     );
   }
 
-  Widget _buildUniversityListView() {
+  Widget _buildUniversityPickerView() {
     final items = UniversityHelper.universityNames;
     return Flexible(
       child: Container(
         child: CupertinoPicker.builder(
           useMagnifier: true,
-          magnification: 1.2,
+          magnification: 1.5,
           backgroundColor: Colors.transparent,
           itemExtent: 44,
           childCount: items.length,
-          itemBuilder: (context, row) {
-            return Center(
-              child: Text(
-                items[row],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15,
-                ),
-              ),
-            );
-          },
+          itemBuilder: (context, row) => _buildPickerViewItem(items[row]),
           onSelectedItemChanged: (row) {
-            RegisterModel.shared.university = items[row];
+            selectedUniversity = items[row];
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPickerViewItem(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 15,
         ),
       ),
     );
@@ -84,8 +94,15 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
           Expanded(
             child: StartButton(
               type: StartButtonType.confirm,
-              onPressed: () =>
-                  Navigator.of(context).pushNamed("/start/registerKeyword"),
+              onPressed: () {
+                if (selectedUniversity == null) {
+                  final snackBar = SnackBar(content: Text("학교를 선택해 주세요."));
+                  Scaffold.of(context).showSnackBar(snackBar);
+                } else {
+                  RegisterModel.shared.university = selectedUniversity;
+                  Navigator.of(context).pushNamed("/start/registerKeyword");
+                }
+              },
             ),
           ),
         ],
@@ -95,9 +112,9 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
 
   void _makeEmailForm() {
     final email = Email(
-                  subject: "[다연결] 우리 학교가 목록에 없어요.",
-                  recipients: const ["yoohan95@gmail.com"],
-                );
-                FlutterEmailSender.send(email).then((_) {});
+      subject: "[다연결] 우리 학교가 목록에 없어요.",
+      recipients: const ["yoohan95@gmail.com"],
+    );
+    FlutterEmailSender.send(email).then((_) {});
   }
 }
