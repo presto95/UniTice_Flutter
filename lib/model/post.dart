@@ -2,9 +2,6 @@ import 'package:meta/meta.dart';
 
 /// 게시물을 나타낸 모델.
 class Post {
-  /// 게시물 식별자.
-  final String id;
-
   /// 게시물 번호.
   final int number;
 
@@ -20,11 +17,14 @@ class Post {
   /// 게시물 기타 정보.
   final String note;
 
-  Post(
-      {@required this.id,
-      @required this.number,
-      @required this.title,
-      @required this.date,
-      @required this.link,
-      this.note = ""});
+  final bool isNotice;
+
+  Post({
+    @required this.number,
+    @required this.title,
+    @required this.date,
+    @required this.link,
+    @required this.isNotice,
+    this.note = "",
+  });
 }
