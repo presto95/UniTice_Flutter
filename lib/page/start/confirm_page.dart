@@ -1,8 +1,13 @@
 import "package:flutter/material.dart";
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
-import 'package:unitice/widgets/start_button.dart';
+import 'package:unitice/model/register_model.dart';
+import 'package:unitice/widget/start_button.dart';
 
 class ConfirmPage extends StatelessWidget with StartUiHelper {
+  final university = RegisterModel.shared.university;
+  final keywords = RegisterModel.shared.keywords;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +39,10 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
   }
 
   Widget _buildPresentationContainer() {
+    final presentingKeywords = keywords.isEmpty
+        ? "없음"
+        : keywords.toString();
+
     return Flexible(
       child: Center(
         child: Column(
@@ -43,13 +52,13 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
             Column(
               children: <Widget>[
                 _buildContentTitleText("학교"),
-                _buildContentItemText("선택된 학교"),
+                _buildContentItemText(university),
               ],
             ),
             Column(
               children: <Widget>[
                 _buildContentTitleText("키워드"),
-                _buildContentItemText("선택된 키워드"),
+                _buildContentItemText(presentingKeywords),
               ],
             ),
           ],
@@ -93,12 +102,22 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
           Expanded(
             child: StartButton(
               type: StartButtonType.confirm,
-              onPressed: () =>
-                  Navigator.of(context).pushReplacementNamed("/main"),
+              onPressed: () {
+                _saveInitialInfo().then((_) {
+                  Navigator.of(context).pushReplacementNamed("/main");
+                });
+              },
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<Null> _saveInitialInfo() async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString("university", university);
+    await preferences.setStringList("kerywords", keywords);
+    return Future.value(null);
   }
 }

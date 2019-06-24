@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_email_sender/flutter_email_sender.dart";
-import 'package:unitice/widgets/app_bar_title.dart';
+import 'package:unitice/widget/app_bar_title.dart';
 
 class SettingPage extends StatelessWidget {
   @override
@@ -72,13 +72,9 @@ class SettingPage extends StatelessWidget {
     return Column(
       children: <Widget>[
         _buildListTileWithDisclosureIndicator(
-            title: "문의하기",
-            onTap: () {
-              final Email email = Email(
-                recipients: const ["yoohan95@gmail.com"],
-              );
-              FlutterEmailSender.send(email).then((_) {});
-            }),
+          title: "문의하기",
+          onTap: _makeEmailForm,
+        ),
         _buildListTileWithDisclosureIndicator(
           title: "앱 평가하기",
           onTap: () {},
@@ -94,5 +90,12 @@ class SettingPage extends StatelessWidget {
       trailing: Icon(Icons.navigate_next),
       onTap: onTap,
     );
+  }
+
+  void _makeEmailForm() {
+    final email = Email(
+      recipients: const ["yoohan95@gmail.com"],
+    );
+    FlutterEmailSender.send(email).then((_) {});
   }
 }

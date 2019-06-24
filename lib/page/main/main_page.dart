@@ -1,14 +1,30 @@
 import "package:flutter/material.dart";
-import 'package:unitice/widgets/app_bar_title.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unitice/service/scrap_service.dart';
+import 'package:unitice/widget/app_bar_title.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  String universityName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _setUniversityName();
+  }
+
   @override
   Widget build(BuildContext context) {
+    ScrapService().initiate();
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle("학교 이름"),
-        actions: _buildAppBarActions(context),
         automaticallyImplyLeading: false,
+        title: AppBarTitle(universityName),
+        actions: _buildAppBarActions(context),
       ),
       body: _buildPostListView(),
     );
@@ -44,5 +60,12 @@ class MainPage extends StatelessWidget {
       ),
       onRefresh: () {},
     );
+  }
+
+  Future _setUniversityName() async {
+    final preferences = await SharedPreferences.getInstance();
+    setState(() {
+      universityName = preferences.getString("university");
+    });
   }
 }

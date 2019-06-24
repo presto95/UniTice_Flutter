@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:unitice/widgets/app_bar_title.dart';
+import 'package:unitice/widget/app_bar_title.dart';
 
 class ChangeUniversityPage extends StatelessWidget {
   @override

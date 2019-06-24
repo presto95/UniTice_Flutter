@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
-import 'package:unitice/widgets/start_button.dart';
+import 'package:unitice/model/register_model.dart';
+import 'package:unitice/model/university_helper.dart';
+import 'package:unitice/widget/start_button.dart';
 
 class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
   @override
@@ -35,7 +38,7 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
             buildSubtitleText("우리 학교가 목록에 없나요?"),
             FlatButton(
               child: Text("우리에게 알려주세요!"),
-              onPressed: () {},
+              onPressed: _makeEmailForm,
             ),
           ],
         ),
@@ -44,16 +47,30 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
   }
 
   Widget _buildUniversityListView() {
+    final items = UniversityHelper.universityNames;
     return Flexible(
       child: Container(
         child: CupertinoPicker.builder(
+          useMagnifier: true,
+          magnification: 1.2,
           backgroundColor: Colors.transparent,
           itemExtent: 44,
-          childCount: 50,
+          childCount: items.length,
           itemBuilder: (context, row) {
-            return Center(child: Text("학교"));
+            return Center(
+              child: Text(
+                items[row],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
+              ),
+            );
           },
-          onSelectedItemChanged: (row) {},
+          onSelectedItemChanged: (row) {
+            RegisterModel.shared.university = items[row];
+          },
         ),
       ),
     );
@@ -74,5 +91,13 @@ class RegisterUniversityPage extends StatelessWidget with StartUiHelper {
         ],
       ),
     );
+  }
+
+  void _makeEmailForm() {
+    final email = Email(
+                  subject: "[다연결] 우리 학교가 목록에 없어요.",
+                  recipients: const ["yoohan95@gmail.com"],
+                );
+                FlutterEmailSender.send(email).then((_) {});
   }
 }
