@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:unitice/service/scrap_service.dart';
+import 'package:unitice/main.dart';
+import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/app_bar_title.dart';
 
 class MainPage extends StatefulWidget {
@@ -8,13 +8,22 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with RouteAware {
   String universityName = "";
+  List<String> keywords = [];
+
+  // Life Cycle
 
   @override
   void initState() {
     super.initState();
     _setUniversityName();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
   }
 
   @override
@@ -27,6 +36,21 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _buildPostListView(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    routeObserver.unsubscribe(this);
+  }
+
+  // Route Observing
+
+  @override
+  void didPopNext() {
+    // TODO: 학교 변경 / 게시물 다시 불러오기 등 초기화 작업
+    _setUniversityName();
+    _setKeywords();
   }
 
   List<Widget> _buildAppBarActions(BuildContext context) {
@@ -61,10 +85,17 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Future _setUniversityName() async {
-    final preferences = await SharedPreferences.getInstance();
+  void _setUniversityName() async {
+    final universityName = await User.university;
     setState(() {
-      universityName = preferences.getString("university");
+      this.universityName = universityName;
+    });
+  }
+
+  Future _setKeywords() async {
+    final keywords = await User.keywords;
+    setState(() {
+      this.keywords = keywords;
     });
   }
 }

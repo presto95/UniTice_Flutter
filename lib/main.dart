@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitice/page/entry_page.dart';
 import 'package:unitice/page/main/main_page.dart';
 import 'package:unitice/page/start/register_university_page.dart';
@@ -12,8 +11,10 @@ import 'package:unitice/page/setting/change_university_page.dart';
 import 'package:unitice/page/start/confirm_page.dart';
 import 'package:unitice/page/start/register_keyword_page.dart';
 
+final routeObserver = RouteObserver<PageRoute>();
+
 void main() {
-  // debugPaintSizeEnabled = true;
+  debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         primaryColor: Color.fromARGB(255, 186, 59, 62),
       ),
+      navigatorObservers: [routeObserver],
       home: EntryPage(),
       routes: {
         "/main": (context) => MainPage(),
