@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
+import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/start_button.dart';
 
 class ConfirmPage extends StatelessWidget with StartUiHelper {
@@ -113,9 +113,8 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
     );
   }
 
-  Future<Null> _saveInitialInfo() async {
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString("university", university);
-    await preferences.setStringList("kerywords", keywords);
+  Future<void> _saveInitialInfo() async {
+    await User.setUniversity(university);
+    await User.setKeywords(keywords);
   }
 }

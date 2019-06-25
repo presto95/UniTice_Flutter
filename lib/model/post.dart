@@ -17,6 +17,7 @@ class Post {
   /// 게시물 기타 정보.
   final String note;
 
+  /// 공지사항인지 아닌지.
   final bool isNotice;
 
   Post({
@@ -27,4 +28,23 @@ class Post {
     @required this.isNotice,
     this.note = "",
   });
+
+  Post.fromMap(Map<String, dynamic> jsonObject)
+      : this.number = int.parse(jsonObject["number"]),
+        this.title = jsonObject["title"],
+        this.date = jsonObject["date"],
+        this.link = jsonObject["link"],
+        this.note = jsonObject["note"],
+        this.isNotice = jsonObject["isNotice"];
+
+  Map<String, dynamic> toMap() {
+    return {
+      "number": number,
+      "title": title,
+      "date": date,
+      "link": link,
+      "note": note,
+      "isNotice": isNotice,
+    };
+  }
 }

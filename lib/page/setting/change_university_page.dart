@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:unitice/model/university_helper.dart';
+import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/app_bar_title.dart';
 
 class ChangeUniversityPage extends StatefulWidget {
@@ -91,8 +92,9 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
                   final snackBar = SnackBar(content: Text("학교를 선택하세요."));
                   Scaffold.of(context).showSnackBar(snackBar);
                 } else {
-                  // TODO: 키워드 초기화
                   // TODO: 북마크 초기화
+                  User.setKeywords([]);
+                  User.setUniversity(selectedUniversity);
                   Navigator.of(context).pop();
                 }
               },
@@ -102,9 +104,10 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
       ),
       decoration: BoxDecoration(
         border: Border.all(
-            color: Theme.of(context).primaryColor,
-            style: BorderStyle.solid,
-            width: 1),
+          color: Theme.of(context).primaryColor,
+          style: BorderStyle.solid,
+          width: 1,
+        ),
         borderRadius: BorderRadius.circular(20),
       ),
     );

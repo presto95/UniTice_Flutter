@@ -31,7 +31,7 @@ class SettingPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ListTile(
-          title: Text("상단 고정 게시물 접기"),
+          title: const Text("상단 고정 게시물 접기"),
           trailing: Switch(
             value: false,
             onChanged: (isOn) {},
@@ -39,7 +39,7 @@ class SettingPage extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16),
-          child: Text("상단 고정 게시물이 펼쳐진 / 접혀진 상태입니다."),
+          child: const Text("상단 고정 게시물이 펼쳐진 / 접혀진 상태입니다."),
         ),
       ],
     );
@@ -94,9 +94,7 @@ class SettingPage extends StatelessWidget {
   }
 
   void _makeEmailForm() {
-    final email = Email(
-      recipients: const ["yoohan95@gmail.com"],
-    );
+    final email = Email(recipients: const ["yoohan95@gmail.com"]);
     FlutterEmailSender.send(email).then((_) {}).catchError((error) {});
   }
 }

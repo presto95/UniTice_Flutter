@@ -10,8 +10,15 @@ class RegisterKeywordPage extends StatefulWidget {
 
 class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     with StartUiHelper {
-  List<String> keywords = [];
-  String currentKeyword = "";
+  List<String> keywords;
+  String currentKeyword;
+
+  @override
+  void initState() {
+    super.initState();
+    keywords = [];
+    currentKeyword = "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +35,10 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
               SizedBox(height: 16),
               Flexible(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Builder(builder: (context) => _buildTextFieldRow(context)),
-                    _buildKeywordsListView(),
+                    _buildKeywordsList(),
                   ],
                 ),
               ),
@@ -96,31 +103,67 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     );
   }
 
-  Widget _buildKeywordsListView() {
+  Widget _buildKeywordsList() {
     final registeredKeywords = keywords.map((keyword) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 16,
+          Dismissible(
+            key: Key(keyword),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      style: BorderStyle.solid,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    keyword,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).primaryColor,
-                style: BorderStyle.solid,
-                width: 1,
+            background: Container(
+              color: Colors.red,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Spacer(),
+                  Container(
+                    padding: EdgeInsets.only(right: 32),
+                    child: Text(
+                      "삭제",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              borderRadius: BorderRadius.circular(30),
             ),
-            child: Text(
-              keyword,
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-              ),
-            ),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction) {
+              if (direction == DismissDirection.endToStart) {
+                setState(() {
+                  keywords.remove(keyword);
+                });
+              }
+            },
           ),
           SizedBox(height: 16),
         ],
