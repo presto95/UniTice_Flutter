@@ -1,11 +1,11 @@
 import 'package:unitice/model/category.dart';
 import 'package:unitice/model/post.dart';
-import 'package:unitice/model/university_type.dart';
+import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/service/scrap_service.dart';
 
-class Seoultech implements UniversityType {
+class Seoultech implements UniversityScrapType {
   @override
-  String baseUrl = "http://www.seoultech.ac.kr/service/info/";
+  String baseUrl = "https://www.seoultech.ac.kr/service/info/";
 
   @override
   List<Category> categories = [
@@ -13,10 +13,10 @@ class Seoultech implements UniversityType {
     Category(id: "matters", description: "학사공지"),
     Category(id: "janghak", description: "장학공지"),
     Category(id: "graduate", description: "대학원공지"),
-    Category(id: "bid", description: "대학입찰"),
-    Category(id: "recruite", description: "채용정보"),
-    Category(id: "committee", description: "등록금심의위원회"),
-    Category(id: "budgetcomm", description: "재정위원회"),
+    // Category(id: "bid", description: "대학입찰"),
+    // Category(id: "recruite", description: "채용정보"),
+    // Category(id: "committee", description: "등록금심의위원회"),
+    // Category(id: "budgetcomm", description: "재정위원회"),
   ];
 
   @override
@@ -27,7 +27,7 @@ class Seoultech implements UniversityType {
 
   @override
   String getCategoryQueryString(Category category) {
-    String result;
+    String result = category.id;
     switch (category.id) {
       case "notice":
         result += "/?bidx=4691&bnum=4691&allboard=false&size=9";
