@@ -1,6 +1,7 @@
-import 'package:unitice/model/scrap_model/%EC%84%9C%EC%9A%B8%EA%B3%BC%ED%95%99%EA%B8%B0%EC%88%A0%EB%8C%80%ED%95%99%EA%B5%90.dart';
+import 'package:unitice/model/scrap_model/cnu.dart';
+import 'package:unitice/model/scrap_model/seoultech.dart';
 import 'package:unitice/model/university.dart';
-import 'package:unitice/model/university_type.dart';
+import 'package:unitice/model/university_scrap_type.dart';
 
 class UniversityHelper {
   static List<String> universityNames =
@@ -155,7 +156,111 @@ class UniversityHelper {
     }
   }
 
-  static UniversityType getScrapModel(University university) {
+  static University getUniversity(String university) {
+    switch (university) {
+      case "KAIST":
+        break;
+      case "KC대학교":
+        break;
+      case "강남대학교":
+        break;
+      case "강원대학교":
+        break;
+      case "경북대학교":
+        break;
+      case "경상대학교":
+        break;
+      case "경성대학교":
+        break;
+      case "경희대학교":
+        break;
+      case "고려대학교":
+        break;
+      case "광운대학교":
+        break;
+      case "국민대학교":
+        break;
+      case "대진대학교":
+        break;
+      case "덕성여자대학교":
+        break;
+      case "동국대학교":
+        break;
+      case "동덕여자대학교":
+        break;
+      case "동신대학교":
+        break;
+      case "명지대학교":
+        break;
+      case "목포대학교":
+        break;
+      case "부경대학교":
+        break;
+      case "부산대학교":
+        break;
+      case "삼육대학교":
+        break;
+      case "서경대학교":
+        break;
+      case "서울과학기술대학교":
+        return University.seoultech;
+        break;
+      case "서울교육대학교":
+        break;
+      case "서울대학교":
+        break;
+      case "서울여자대학교":
+        break;
+      case "성공회대학교":
+        break;
+      case "성결대학교":
+        break;
+      case "성균관대학교":
+        break;
+      case "성신여자대학교":
+        break;
+      case "세종대학교":
+        break;
+      case "세한대학교":
+        break;
+      case "숙명여자대학교":
+        break;
+      case "우석대학교":
+        break;
+      case "이화여자대학교":
+        break;
+      case "전남대학교":
+        break;
+      case "전북대학교":
+        break;
+      case "제주대학교":
+        break;
+      case "총신대학교":
+        break;
+      case "충남대학교":
+        return University.cnu;
+        break;
+      case "충북대학교":
+        break;
+      case "한국산업기술대학교":
+        break;
+      case "한국예술종합학교":
+        break;
+      case "한국외국어대학교":
+        break;
+      case "한성대학교":
+        break;
+      case "한양대학교":
+        break;
+      case "홍익대학교":
+        break;
+      default:
+        break;
+    }
+    return null;
+  }
+
+  static UniversityScrapType getScrapModel(University university) {
     switch (university) {
       case University.kaist:
         // TODO: Handle this case.
@@ -275,7 +380,7 @@ class UniversityHelper {
         // TODO: Handle this case.
         break;
       case University.cnu:
-        // TODO: Handle this case.
+        return Cnu();
         break;
       case University.chungbuk:
         // TODO: Handle this case.
@@ -299,5 +404,6 @@ class UniversityHelper {
         // TODO: Handle this case.
         break;
     }
+    return null;
   }
 }

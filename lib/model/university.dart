@@ -6,7 +6,7 @@ enum University {
   // KC대학교
   kcu,
 
-  /* ㄱ */ 
+  /* ㄱ */
 
   // 강남대학교
   kangnam,
@@ -33,7 +33,7 @@ enum University {
 
   // 대진대학교
   daejin,
-  //덕성여자대학교
+  // 덕성여자대학교
   duksung,
   // 동국대학교
   dongguk,
@@ -50,9 +50,9 @@ enum University {
   mju,
   // 목포대학교
   mokpo,
-  
+
   /* ㅂ */
-  
+
   // 부경대학교
   pknu,
   // 부산대학교
@@ -80,7 +80,7 @@ enum University {
   skku,
   // 성신여자대학교
   sungshin,
-  // 세중대학교
+  // 세종대학교
   sejong,
   // 세한대학교
   sehan,
@@ -105,7 +105,7 @@ enum University {
 
   /* ㅊ */
 
-  // 총신대학교  
+  // 총신대학교
   chongshin,
   // 충남대학교
   cnu,

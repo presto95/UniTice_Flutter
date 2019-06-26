@@ -3,15 +3,15 @@ import 'package:sqflite/sqlite_api.dart';
 import 'package:unitice/model/post.dart';
 
 class BookmarkProvider {
-  Database database;
-  final String databaseName = "bookmark";
+  Database _database;
+  final String _databaseName = "bookmark";
 
   Future open() async {
-    final path = await getDatabasesPath() + "$databaseName.db";
-    database = await openDatabase(path, version: 1,
-        onCreate: (database, version) async {
+    final path = await getDatabasesPath() + "$_databaseName.db";
+    _database = await openDatabase(path, version: 1,
+        onCreate: (_database, version) async {
       final sql = """
-      create table $databaseName (
+      create table $_databaseName (
         number integer not null,
         title text not null,
         date text not null,
@@ -20,32 +20,32 @@ class BookmarkProvider {
         isNotice integer not null
       )
       """;
-      await database.execute(sql);
+      await _database.execute(sql);
     });
   }
 
   Future<Post> insert(Post post) async {
-    await database.insert(databaseName, post.toMap());
+    await _database.insert(_databaseName, post.toMap());
     return post;
   }
 
   Future<List<Post>> readAll() async {
-    List<Map> maps = await database.query(databaseName);
+    final maps = await _database.query(_databaseName);
     if (maps.isNotEmpty) {
-      return maps.map((map) => Post.fromMap(map));
+      return maps.map((map) => Post.fromMap(map)).toList();
     }
     return null;
   }
 
   Future<int> deleteByTitle(String title) async {
-    return await database
-        .delete(databaseName, where: "title = ?", whereArgs: [title]);
+    return await _database
+        .delete(_databaseName, where: "title = ?", whereArgs: [title]);
   }
 
   Future<int> update(Post post) async {
-    return await database.update(databaseName, post.toMap(),
+    return await _database.update(_databaseName, post.toMap(),
         where: "title = ?", whereArgs: [post.title]);
   }
 
-  Future close() async => database.close();
+  Future close() async => _database.close();
 }

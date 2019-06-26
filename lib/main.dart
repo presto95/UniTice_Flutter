@@ -14,7 +14,7 @@ import 'package:unitice/page/start/register_keyword_page.dart';
 final routeObserver = RouteObserver<PageRoute>();
 
 void main() {
-  debugPaintSizeEnabled = true;
+  // debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
