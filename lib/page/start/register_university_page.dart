@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -6,6 +5,7 @@ import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/widget/start_button.dart';
+import 'package:unitice/widget/university_picker.dart';
 
 class RegisterUniversityPage extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class RegisterUniversityPage extends StatefulWidget {
 
 class _RegisterUniversityPageState extends State<RegisterUniversityPage>
     with StartUiHelper {
-  String selectedUniversity;
+  String _selectedUniversity;
 
   @override
   Widget build(BuildContext context) {
@@ -57,31 +57,9 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
   Widget _buildUniversityPickerView() {
     final items = UniversityHelper.universityNames;
     return Flexible(
-      child: Container(
-        child: CupertinoPicker.builder(
-          useMagnifier: true,
-          magnification: 1.5,
-          backgroundColor: Colors.transparent,
-          itemExtent: 44,
-          childCount: items.length,
-          itemBuilder: (context, row) => _buildPickerViewItem(items[row]),
-          onSelectedItemChanged: (row) {
-            selectedUniversity = items[row];
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPickerViewItem(String text) {
-    return Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
+      child: UniversityPicker(
+        universityNames: items,
+        onSelectedUniversityChanged: (name) => _selectedUniversity = name,
       ),
     );
   }
@@ -95,11 +73,11 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
             child: StartButton(
               type: StartButtonType.confirm,
               onPressed: () {
-                if (selectedUniversity == null) {
-                  final snackBar = SnackBar(content: Text("학교를 선택해 주세요."));
+                if (_selectedUniversity == null) {
+                  final snackBar = SnackBar(content: Text("학교를 선택하세요."));
                   Scaffold.of(context).showSnackBar(snackBar);
                 } else {
-                  RegisterModel.shared.university = selectedUniversity;
+                  RegisterModel.shared.university = _selectedUniversity;
                   Navigator.of(context).pushNamed("/start/registerKeyword");
                 }
               },

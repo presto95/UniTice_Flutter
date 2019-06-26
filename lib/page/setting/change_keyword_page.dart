@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/app_bar_title.dart';
+import 'package:unitice/widget/dismissible_background.dart';
 
 class ChangeKeywordPage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          title: AppBarTitle("키워드 설정"),
+          title: AppBarTitle(title: "키워드 설정"),
         ),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
@@ -124,25 +125,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
                 ),
               ],
             ),
-            background: Container(
-              color: Colors.red,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.only(right: 32),
-                    child: Text(
-                      "삭제",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            background: DismissibleBackground(),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) {
               if (direction == DismissDirection.endToStart) {
@@ -192,7 +175,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
       setState(() {
         keywords.add(trimmedText);
       });
-      await User.setKeywords(keywords);
+      User.setKeywords(keywords);
     }
   }
 }

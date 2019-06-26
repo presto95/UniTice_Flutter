@@ -1,16 +1,16 @@
 import "package:flutter/material.dart";
 
 class AppBarTitle extends StatelessWidget {
-  final String text;
+  final String title;
 
-  AppBarTitle(this.text);
+  AppBarTitle({this.title});
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      title,
       style: TextStyle(
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

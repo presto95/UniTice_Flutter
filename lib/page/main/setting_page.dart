@@ -7,7 +7,7 @@ class SettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle("설정"),
+        title: AppBarTitle(title: "설정"),
       ),
       body: ListView(
         children: <Widget>[

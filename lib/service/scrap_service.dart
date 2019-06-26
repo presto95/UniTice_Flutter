@@ -6,8 +6,12 @@ class ScrapService {
   static ScrapService shared = ScrapService();
 
   Future<Document> request(String url) async {
-    final response = await http.get(url);
-    final document = parse(response.body);
-    return document;
+    try {
+      final response = await http.get(url);
+      final document = parse(response.body);
+      return document;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/app_bar_title.dart';
+import 'package:unitice/widget/university_picker.dart';
 
 class ChangeUniversityPage extends StatefulWidget {
   @override
@@ -10,13 +10,13 @@ class ChangeUniversityPage extends StatefulWidget {
 }
 
 class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
-  String selectedUniversity;
+  String _selectedUniversity;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle("학교 변경"),
+        title: AppBarTitle(title: "학교 변경"),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -34,41 +34,24 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
   Widget _buildUniversityPickerView() {
     final items = UniversityHelper.universityNames;
     return Flexible(
-      child: CupertinoPicker.builder(
-        backgroundColor: Colors.transparent,
-        useMagnifier: true,
-        magnification: 1.5,
-        itemExtent: 44,
-        childCount: items.length,
-        itemBuilder: (context, row) => _buildPickerViewItem(items[row]),
-        onSelectedItemChanged: (row) {
-          selectedUniversity = items[row];
-        },
-      ),
-    );
-  }
-
-  Widget _buildPickerViewItem(String text) {
-    return Center(
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-          fontSize: 15,
-        ),
+      child: UniversityPicker(
+        universityNames: items,
+        onSelectedUniversityChanged: (name) => _selectedUniversity = name,
       ),
     );
   }
 
   Widget _buildWarningText() {
-    return Text(
-      "학교 변경시 저장된 키워드 및 북마크 정보가 초기화됩니다.",
-      style: TextStyle(
-        color: Colors.red,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
+    return FittedBox(
+      child: Text(
+        "학교 변경시 저장된 키워드 및 북마크 정보가 초기화됩니다.",
+        style: TextStyle(
+          color: Colors.red,
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+      fit: BoxFit.contain,
     );
   }
 
@@ -88,13 +71,13 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
                 ),
               ),
               onPressed: () {
-                if (selectedUniversity == null) {
+                if (_selectedUniversity == null) {
                   final snackBar = SnackBar(content: Text("학교를 선택하세요."));
                   Scaffold.of(context).showSnackBar(snackBar);
                 } else {
                   // TODO: 북마크 초기화
                   User.setKeywords([]);
-                  User.setUniversity(selectedUniversity);
+                  User.setUniversity(_selectedUniversity);
                   Navigator.of(context).pop();
                 }
               },

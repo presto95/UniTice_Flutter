@@ -92,12 +92,13 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
             borderRadius: BorderRadius.circular(20),
           ),
           child: FlatButton(
-              child: Text("등록"),
-              onPressed: () {
-                _registerKeyword(context, currentKeyword);
-                currentKeyword = "";
-                textEditingController.text = null;
-              }),
+            child: Text("등록"),
+            onPressed: () {
+              _registerKeyword(context, currentKeyword);
+              currentKeyword = "";
+              textEditingController.text = null;
+            },
+          ),
         ),
       ],
     );
