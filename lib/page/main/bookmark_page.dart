@@ -12,6 +12,7 @@ class BookmarkPage extends StatefulWidget {
 
 class _BookmarkPageState extends State<BookmarkPage> {
   List<Post> _posts = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -25,11 +26,28 @@ class _BookmarkPageState extends State<BookmarkPage> {
       appBar: AppBar(
         title: AppBarTitle(title: "북마크"),
       ),
-      body: _posts.isEmpty ? _buildEmptyContainer() : _buildListView(),
+      body: Stack(
+        children: <Widget>[
+          _buildContents(),
+          _isLoading ? CircularProgressIndicator() : Container(),
+        ],
+      ),
     );
   }
 
-  Widget _buildListView() {
+  Widget _buildContents() {
+    if (_isLoading) {
+      return Container();
+    } else {
+      if (_posts.isEmpty) {
+        return _buildEmptyContainer();
+      } else {
+        return _buildBookmarkList();
+      }
+    }
+  }
+
+  Widget _buildBookmarkList() {
     return ListView.builder(
       itemCount: _posts.length,
       itemBuilder: (context, row) {
