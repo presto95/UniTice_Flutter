@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:unitice/main.dart';
-import 'package:unitice/model/post.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
@@ -16,7 +15,6 @@ class _MainPageState extends State<MainPage> with RouteAware {
   UniversityScrapType _universityScrapModel;
   String _universityName;
   List<String> _keywords = [];
-  List<Post> _posts = [];
 
   // Life Cycle
 
@@ -24,6 +22,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
   void initState() {
     super.initState();
     _setUniversity();
+    _setKeywords();
   }
 
   @override
@@ -52,7 +51,8 @@ class _MainPageState extends State<MainPage> with RouteAware {
         ),
         body: TabBarView(
           children: _universityScrapModel.categories
-              .map((category) => PostList(_universityScrapModel, category))
+              .map((category) =>
+                  PostList(_universityScrapModel, category, _keywords))
               .toList(),
         ),
       ),
@@ -69,6 +69,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
 
   @override
   void didPopNext() {
+    super.didPopNext();
     // TODO: 학교 변경 / 게시물 다시 불러오기 등 초기화 작업
     _setUniversity();
     _setKeywords();

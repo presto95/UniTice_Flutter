@@ -41,23 +41,13 @@ class _BookmarkPageState extends State<BookmarkPage> {
               child: ListTile(
                 title: Text(post.title),
                 subtitle: Text(post.date),
-                onTap: () {
-                  final url = post.link;
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PostWebViewPage(url)));
-                },
+                onTap: () => _pushWebViewPage(context, post.link),
               ),
               background: DismissibleBackground(),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) async {
                 if (direction == DismissDirection.endToStart) {
-                  final provider = BookmarkProvider();
-                  await provider.open();
-                  await provider.deleteByTitle(post.title);
-                  await provider.close();
-                  setState(() {
-                    _posts.remove(post);
-                  });
+                  _removeBookmark(post);
                 }
               },
             ),
@@ -79,5 +69,20 @@ class _BookmarkPageState extends State<BookmarkPage> {
     setState(() {
       _posts = posts ?? [];
     });
+  }
+
+  void _removeBookmark(Post post) async {
+    final provider = BookmarkProvider();
+    await provider.open();
+    await provider.deleteByTitle(post.title);
+    await provider.close();
+    setState(() {
+      _posts.remove(post);
+    });
+  }
+
+  void _pushWebViewPage(BuildContext context, String url) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => PostWebViewPage(url)));
   }
 }
