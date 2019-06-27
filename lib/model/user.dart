@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class User {
   static final String _universityKey = "university";
   static final String _keywordsKey = "keywords";
+  static final String _isNoticeVisibleKey = "isNoticeVisible";
 
   static Future<SharedPreferences> get preferences =>
       SharedPreferences.getInstance();
@@ -18,4 +19,10 @@ class User {
 
   static Future<void> setKeywords(List<String> keywords) async =>
       (await preferences).setStringList(_keywordsKey, keywords);
+
+  static Future<bool> get isNoticeVisible async =>
+      (await preferences).getBool(_isNoticeVisibleKey);
+
+  static Future<void> setNoticeVisibility(bool isVisible) async =>
+      (await preferences).setBool(_isNoticeVisibleKey, isVisible);
 }
