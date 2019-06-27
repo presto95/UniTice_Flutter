@@ -19,15 +19,25 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> with RouteAware {
+  final _scrollController = ScrollController();
+  bool _isLoading = false;
   bool _isNoticeVisible = false;
-  List<Post> _posts = [];
+  List<Post> _noticePosts = [];
+  List<Post> _standardPosts = [];
   int _page;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.offset >
+              _scrollController.position.maxScrollExtent + 20 &&
+          !_isLoading) {
+        _requestPosts(false);
+      }
+    });
     _page = 1;
-    _requestPosts();
+    _requestPosts(false);
     _setNoticeVisibility();
   }
 
@@ -39,21 +49,17 @@ class _PostListState extends State<PostList> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _requestPosts(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return RefreshIndicator(
-            child: _buildPostList(),
-            onRefresh: () {
-              _page = 1;
-              return _requestPosts();
-            },
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
+    return Stack(
+      children: <Widget>[
+        RefreshIndicator(
+          child: _buildPostList(),
+          onRefresh: () {
+            _page = 1;
+            return _requestPosts(true);
+          },
+        ),
+        _isLoading ? Center(child: CircularProgressIndicator()) : Container(),
+      ],
     );
   }
 
@@ -66,116 +72,140 @@ class _PostListState extends State<PostList> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
-    // 상태 초기화
     _page = 1;
-    _requestPosts();
+    _requestPosts(false);
     _setNoticeVisibility();
   }
 
   Widget _buildPostList() {
-    final _scrollController = ScrollController();
-    final noticePosts = _posts.where((post) => post.isNotice).toList();
-    final standardPosts = _posts.where((post) => !post.isNotice).toList();
-    final noticePostsLength = noticePosts.length;
-    final standardPostsLength = standardPosts.length;
+    final noticePostsLength = _noticePosts.length;
+    final standardPostsLength = _standardPosts.length;
     return ListView.builder(
       controller: _scrollController,
-      itemCount:
-          _isNoticeVisible ? _posts.length + 2 : standardPosts.length + 1,
+      itemCount: _isNoticeVisible
+          ? noticePostsLength + standardPostsLength + 2
+          : standardPostsLength + 1,
       itemBuilder: (context, row) {
         if (row == 0) {
-          return Container(
-            padding: EdgeInsets.only(left: 16),
-            color: Theme.of(context).primaryColor,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    "공지사항",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(_isNoticeVisible
-                      ? Icons.arrow_drop_up
-                      : Icons.arrow_drop_down),
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      final newState = !_isNoticeVisible;
-                      setState(() {
-                        _isNoticeVisible = newState;
-                      });
-                    });
-                  },
-                )
-              ],
-            ),
-          );
+          return _buildNoticeHeader();
         }
         if (_isNoticeVisible && row == noticePostsLength + 1) {
-          return SizedBox(
-            height: 5,
-            child: Container(
-              color: Theme.of(context).primaryColor,
-            ),
-          );
+          return _buildBorder();
         }
-        final post =
-            _decidePost(noticePosts, standardPosts, row, _isNoticeVisible);
-        return Column(
-          children: <Widget>[
-            ListTile(
-              title: Text(post.title),
-              subtitle: Text(post.date),
-              onTap: () async {
-                final url = widget.universityModel
-                    .getPostUrl(widget.category, post.link);
-                await _saveBookmark(post);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PostWebViewPage(url)));
-              },
-            ),
-            Divider(height: 0),
-          ],
-        );
+        final post = _decidePost(row);
+        return _buildPostListTile(context, post);
       },
     );
   }
 
-  Post _decidePost(List<Post> noticePosts, List<Post> standardPosts, int row,
-      bool isNoticeVisible) {
-    if (isNoticeVisible) {
-      if (row <= noticePosts.length) {
-        return noticePosts[row - 1];
-      } else if (row >= noticePosts.length + 2) {
-        return standardPosts[row - noticePosts.length - 2];
+  Widget _buildNoticeHeader() {
+    return Container(
+      padding: EdgeInsets.only(left: 16),
+      color: Theme.of(context).primaryColor,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              "공지사항",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 17,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(
+              _isNoticeVisible ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                final newState = !_isNoticeVisible;
+                setState(() {
+                  _isNoticeVisible = newState;
+                });
+              });
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBorder() {
+    return SizedBox(
+      height: 5,
+      child: Container(
+        color: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  Widget _buildPostListTile(BuildContext context, Post post) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(post.title),
+          subtitle: Text(post.date),
+          onTap: () async {
+            final url =
+                widget.universityModel.getPostUrl(widget.category, post.link);
+            await _saveBookmark(post);
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => PostWebViewPage(url)));
+          },
+        ),
+        Divider(height: 0),
+      ],
+    );
+  }
+
+  Post _decidePost(int row) {
+    if (_isNoticeVisible) {
+      if (row <= _noticePosts.length) {
+        return _noticePosts[row - 1];
+      } else if (row >= _noticePosts.length + 2) {
+        return _standardPosts[row - _noticePosts.length - 2];
       }
     } else {
-      return standardPosts[row - 1];
+      return _standardPosts[row - 1];
     }
     return null;
   }
 
   void _setNoticeVisibility() async {
     final isVisible = await User.isNoticeVisible;
-    print(isVisible);
     setState(() {
       _isNoticeVisible = isVisible ?? false;
     });
   }
 
-  Future<void> _requestPosts() async {
+  Future<void> _requestPosts(bool isInRefresh) async {
+    setState(() {
+      _isLoading = true;
+    });
     final posts =
-        await widget.universityModel.requestPosts(widget.category, _page, "");
+        await widget.universityModel.requestPosts(widget.category, _page);
     _page += 1;
+    final noticePosts = posts.where((post) => post.isNotice);
+    final standardPosts = posts.where((post) => !post.isNotice);
     if (mounted) {
-      _posts = posts;
+      setState(() {
+        if (isInRefresh) {
+          if (_noticePosts.toString() != noticePosts.toList().toString()) {
+            _noticePosts = noticePosts.toList();
+          }
+          _standardPosts = standardPosts.toList();
+        } else {
+          if (_noticePosts.toString() != noticePosts.toList().toString()) {
+            _noticePosts.addAll(noticePosts);
+          }
+          _standardPosts.addAll(standardPosts);
+        }
+        _isLoading = false;
+      });
     }
   }
 

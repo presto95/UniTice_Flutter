@@ -51,8 +51,8 @@ class Cnu implements UniversityScrapType {
   }
 
   @override
-  Future<List<Post>> requestPosts(
-      Category category, int page, String query) async {
+  Future<List<Post>> requestPosts(Category category, int page,
+      [String query = ""]) async {
     List<Post> posts = [];
     final url = getPageUrl(category, page, query);
     try {

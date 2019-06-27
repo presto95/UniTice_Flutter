@@ -11,5 +11,6 @@ abstract class UniversityScrapType {
   String getCategoryQueryString(Category category);
   String getPageQueryString(int page);
   String getSearchQueryString(String query);
-  Future<List<Post>> requestPosts(Category category, int page, String query);
+  Future<List<Post>> requestPosts(Category category, int page,
+      [String query = ""]);
 }
