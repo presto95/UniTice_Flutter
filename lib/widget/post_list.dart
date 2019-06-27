@@ -6,6 +6,7 @@ import 'package:unitice/model/post.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/post_web_view_page.dart';
+import "package:highlight_text/highlight_text.dart";
 
 class PostList extends StatefulWidget {
   final UniversityScrapType universityModel;
@@ -72,8 +73,12 @@ class _PostListState extends State<PostList> with RouteAware {
   @override
   void didPopNext() {
     super.didPopNext();
+    setState(() {
+      _noticePosts = [];
+      _standardPosts = [];
+    });
     _page = 1;
-    _requestPosts(false);
+    _requestPosts(true);
     _setNoticeVisibility();
   }
 
@@ -82,6 +87,7 @@ class _PostListState extends State<PostList> with RouteAware {
     final standardPostsLength = _standardPosts.length;
     return ListView.builder(
       controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: _isNoticeVisible
           ? noticePostsLength + standardPostsLength + 2
           : standardPostsLength + 1,
@@ -148,7 +154,8 @@ class _PostListState extends State<PostList> with RouteAware {
       children: <Widget>[
         ListTile(
           title: Text(post.title),
-          subtitle: Text(post.date),
+          subtitle: Text(
+              post.note.isEmpty ? post.date : post.date + " | " + post.note),
           onTap: () async {
             final url =
                 widget.universityModel.getPostUrl(widget.category, post.link);
@@ -212,7 +219,11 @@ class _PostListState extends State<PostList> with RouteAware {
   Future<void> _saveBookmark(Post post) async {
     final provider = BookmarkProvider();
     await provider.open();
+    final bookmarks = await provider.readAll();
     final url = widget.universityModel.getPostUrl(widget.category, post.link);
+    if (bookmarks.contains((bookmark) => bookmark.url == url)) {
+      return;
+    }
     final bookmark = Post(
       number: post.number,
       title: post.title,

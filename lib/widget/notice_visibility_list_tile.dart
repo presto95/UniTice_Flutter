@@ -31,7 +31,7 @@ class _NoticeVisibilityListTileState extends State<NoticeVisibilityListTile> {
 
   Widget _buildListTile() {
     return ListTile(
-      title: const Text("공지사항 펼치기"),
+      title: Text("공지사항 펼치기"),
       trailing: Switch(
         value: _isNoticeVisible,
         onChanged: (isOn) {
