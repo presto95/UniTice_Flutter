@@ -1,29 +1,19 @@
 import "package:flutter/material.dart";
 import 'package:flutter/cupertino.dart';
 
-class UniversityPicker extends StatefulWidget {
+class UniversityPicker extends StatelessWidget {
   final List<String> universityNames;
   final void Function(String) onSelectedUniversityChanged;
 
   UniversityPicker({this.universityNames, this.onSelectedUniversityChanged});
 
   @override
-  State<StatefulWidget> createState() => _UniversityPickerState();
-}
-
-class _UniversityPickerState extends State<UniversityPicker> {
-  String _selectedUniversity;
-
-  String get selectedUniversity => _selectedUniversity;
-
-  @override
   Widget build(BuildContext context) {
     return CupertinoPicker.builder(
-      itemBuilder: (context, row) =>
-          _buildPickerItem(widget.universityNames[row]),
-      childCount: widget.universityNames.length,
+      itemBuilder: (context, row) => _buildPickerItem(universityNames[row]),
+      childCount: universityNames.length,
       onSelectedItemChanged: (row) {
-        widget.onSelectedUniversityChanged(widget.universityNames[row]);
+        onSelectedUniversityChanged(universityNames[row]);
       },
       itemExtent: 44,
       backgroundColor: Colors.transparent,
