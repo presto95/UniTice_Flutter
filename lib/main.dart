@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
       routes: {
         "/main": (context) => MainPage(),
         "/setting": (context) => SettingPage(),
-        "/search": (context) => SearchPage(),
         "/bookmark": (context) => BookmarkPage(),
         "/start/registerUniversity": (context) => RegisterUniversityPage(),
         "/start/registerKeyword": (context) => RegisterKeywordPage(),

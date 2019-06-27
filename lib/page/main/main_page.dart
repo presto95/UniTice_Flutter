@@ -3,6 +3,7 @@ import 'package:unitice/main.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
+import 'package:unitice/page/main/search_page.dart';
 import 'package:unitice/widget/app_bar_title.dart';
 import 'package:unitice/widget/post_list.dart';
 
@@ -83,7 +84,9 @@ class _MainPageState extends State<MainPage> with RouteAware {
       ),
       IconButton(
         icon: Icon(Icons.search),
-        onPressed: () => Navigator.of(context).pushNamed("/search"),
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                SearchPage(_universityScrapModel.categories))),
       ),
       IconButton(
         icon: Icon(Icons.bookmark),
