@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import "package:flutter/material.dart";
 import 'package:unitice/main.dart';
 import 'package:unitice/model/bookmark_provider.dart';
@@ -6,7 +8,6 @@ import 'package:unitice/model/post.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/post_web_view_page.dart';
-import "package:highlight_text/highlight_text.dart";
 
 class PostList extends StatefulWidget {
   final UniversityScrapType universityModel;
@@ -20,6 +21,8 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> with RouteAware {
+  final a = AlwaysScrollableScrollPhysics();
+  final b = BouncingScrollPhysics();
   final _scrollController = ScrollController();
   bool _isLoading = false;
   bool _isNoticeVisible = false;
@@ -30,16 +33,24 @@ class _PostListState extends State<PostList> with RouteAware {
   @override
   void initState() {
     super.initState();
+    _page = 1;
+    _requestPosts(isInRefresh: false);
+    _setNoticeVisibility();
     _scrollController.addListener(() {
-      if (_scrollController.offset >
-              _scrollController.position.maxScrollExtent + 20 &&
-          !_isLoading) {
-        _requestPosts(false);
+      if (Platform.isIOS) {
+        if (_scrollController.offset >
+                _scrollController.position.maxScrollExtent + 20 &&
+            !_isLoading) {
+          _requestPosts(isInRefresh: false);
+        }
+      } else {
+        if (_scrollController.position.pixels ==
+                _scrollController.position.maxScrollExtent &&
+            !_isLoading) {
+          _requestPosts(isInRefresh: false);
+        }
       }
     });
-    _page = 1;
-    _requestPosts(false);
-    _setNoticeVisibility();
   }
 
   @override
@@ -55,8 +66,7 @@ class _PostListState extends State<PostList> with RouteAware {
         RefreshIndicator(
           child: _buildPostList(),
           onRefresh: () {
-            _page = 1;
-            return _requestPosts(true);
+            return _requestPosts(isInRefresh: true);
           },
         ),
         _isLoading ? Center(child: CircularProgressIndicator()) : Container(),
@@ -77,8 +87,7 @@ class _PostListState extends State<PostList> with RouteAware {
       _noticePosts = [];
       _standardPosts = [];
     });
-    _page = 1;
-    _requestPosts(true);
+    _requestPosts(isInRefresh: true);
     _setNoticeVisibility();
   }
 
@@ -101,6 +110,26 @@ class _PostListState extends State<PostList> with RouteAware {
         final post = _decidePost(row);
         return _buildPostListTile(context, post);
       },
+    );
+  }
+
+  Widget _buildPostListTile(BuildContext context, Post post) {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(post.title),
+          subtitle: Text(
+              post.note.isEmpty ? post.date : post.date + " | " + post.note),
+          onTap: () async {
+            final url =
+                widget.universityModel.getPostUrl(widget.category, post.link);
+            await _saveBookmark(post);
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => PostWebViewPage(url)));
+          },
+        ),
+        Divider(height: 0),
+      ],
     );
   }
 
@@ -149,26 +178,6 @@ class _PostListState extends State<PostList> with RouteAware {
     );
   }
 
-  Widget _buildPostListTile(BuildContext context, Post post) {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          title: Text(post.title),
-          subtitle: Text(
-              post.note.isEmpty ? post.date : post.date + " | " + post.note),
-          onTap: () async {
-            final url =
-                widget.universityModel.getPostUrl(widget.category, post.link);
-            await _saveBookmark(post);
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => PostWebViewPage(url)));
-          },
-        ),
-        Divider(height: 0),
-      ],
-    );
-  }
-
   Post _decidePost(int row) {
     if (_isNoticeVisible) {
       if (row <= _noticePosts.length) {
@@ -189,10 +198,13 @@ class _PostListState extends State<PostList> with RouteAware {
     });
   }
 
-  Future<void> _requestPosts(bool isInRefresh) async {
+  Future<void> _requestPosts({bool isInRefresh}) async {
     setState(() {
       _isLoading = true;
     });
+    if (isInRefresh) {
+      _page = 1;
+    }
     final posts =
         await widget.universityModel.requestPosts(widget.category, _page);
     _page += 1;
@@ -219,7 +231,7 @@ class _PostListState extends State<PostList> with RouteAware {
   Future<void> _saveBookmark(Post post) async {
     final provider = BookmarkProvider();
     await provider.open();
-    final bookmarks = await provider.readAll();
+    final bookmarks = await provider.readAll() ?? [];
     final url = widget.universityModel.getPostUrl(widget.category, post.link);
     if (bookmarks.contains((bookmark) => bookmark.url == url)) {
       return;
