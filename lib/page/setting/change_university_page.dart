@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
+import 'package:unitice/model/bookmark_provider.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/user.dart';
-import 'package:unitice/widget/app_bar_title.dart';
+import 'package:unitice/widget/app_bar_title_text.dart';
 import 'package:unitice/widget/university_picker.dart';
 
 class ChangeUniversityPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle(title: "학교 변경"),
+        title: AppBarTitleText("학교 변경"),
       ),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
@@ -24,7 +25,9 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
           children: <Widget>[
             _buildUniversityPickerView(),
             _buildWarningText(),
-            Builder(builder: (context) => _buildButtonContainer(context)),
+            Builder(
+              builder: (context) => _buildButtonContainer(context),
+            ),
           ],
         ),
       ),
@@ -70,17 +73,7 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              onPressed: () {
-                if (_selectedUniversity == null) {
-                  final snackBar = SnackBar(content: Text("학교를 선택하세요."));
-                  Scaffold.of(context).showSnackBar(snackBar);
-                } else {
-                  // TODO: 북마크 초기화
-                  User.setKeywords([]);
-                  User.setUniversity(_selectedUniversity);
-                  Navigator.of(context).pop();
-                }
-              },
+              onPressed: () => _changeUniversity(context),
             ),
           ),
         ],
@@ -94,5 +87,26 @@ class _ChangeUniversityPageState extends State<ChangeUniversityPage> {
         borderRadius: BorderRadius.circular(20),
       ),
     );
+  }
+
+  void _changeUniversity(BuildContext context) {
+    if (_selectedUniversity == null) {
+      final snackBar = SnackBar(
+        content: Text("학교를 선택하세요."),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      _removeBookmarks();
+      User.setKeywords([]);
+      User.setUniversity(_selectedUniversity);
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _removeBookmarks() async {
+    final provider = BookmarkProvider();
+    await provider.open();
+    await provider.deleteAll();
+    await provider.close();
   }
 }

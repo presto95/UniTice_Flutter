@@ -9,17 +9,21 @@ class DismissibleBackground extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Spacer(),
-          Container(
-            padding: const EdgeInsets.only(right: 32),
-            child: Text(
-              "삭제",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-              ),
-            ),
-          ),
+          _buildBackground(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBackground() {
+    return Container(
+      padding: const EdgeInsets.only(right: 32),
+      child: Text(
+        "삭제",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+        ),
       ),
     );
   }

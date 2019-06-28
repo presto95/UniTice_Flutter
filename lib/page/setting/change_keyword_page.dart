@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:unitice/model/user.dart';
-import 'package:unitice/widget/app_bar_title.dart';
+import 'package:unitice/widget/app_bar_title_text.dart';
 import 'package:unitice/widget/dismissible_background.dart';
 
 class ChangeKeywordPage extends StatefulWidget {
@@ -9,14 +9,12 @@ class ChangeKeywordPage extends StatefulWidget {
 }
 
 class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
-  List<String> keywords;
-  String currentKeyword;
+  List<String> _keywords = [];
+  String _currentKeyword = "";
 
   @override
   void initState() {
     super.initState();
-    keywords = [];
-    currentKeyword = "";
     _fetchKeywords();
   }
 
@@ -26,7 +24,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: AppBar(
-          title: AppBarTitle(title: "키워드 설정"),
+          title: AppBarTitleText("키워드 설정"),
         ),
         body: SafeArea(
           minimum: const EdgeInsets.all(16),
@@ -37,7 +35,9 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Builder(builder: (context) => _buildTextFieldRow(context)),
+                    Builder(
+                      builder: (context) => _buildTextFieldRow(context),
+                    ),
                     _buildKeywordsList(),
                   ],
                 ),
@@ -58,13 +58,13 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
             controller: textEditingController,
             autofocus: true,
             decoration: InputDecoration(
-              labelText: "키워드 입력",
+              hintText: "키워드 입력",
             ),
             keyboardType: TextInputType.text,
-            onChanged: (text) => currentKeyword = text,
+            onChanged: (text) => _currentKeyword = text,
             onSubmitted: (text) {
               _registerKeyword(context, text);
-              currentKeyword = "";
+              _currentKeyword = "";
               textEditingController.text = null;
             },
           ),
@@ -81,8 +81,8 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
           child: FlatButton(
             child: Text("등록"),
             onPressed: () {
-              _registerKeyword(context, currentKeyword);
-              currentKeyword = "";
+              _registerKeyword(context, _currentKeyword);
+              _currentKeyword = "";
               textEditingController.text = null;
             },
           ),
@@ -92,7 +92,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
   }
 
   Widget _buildKeywordsList() {
-    final registeredKeywords = keywords.map((keyword) {
+    final registeredKeywords = _keywords.map((keyword) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -130,7 +130,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
             onDismissed: (direction) {
               if (direction == DismissDirection.endToStart) {
                 setState(() {
-                  keywords.remove(keyword);
+                  _keywords.remove(keyword);
                 });
               }
             },
@@ -152,30 +152,34 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
   void _fetchKeywords() async {
     final keywords = await User.keywords;
     setState(() {
-      this.keywords = keywords;
+      _keywords = keywords;
     });
   }
 
-  void _registerKeyword(BuildContext context, String keyword) async {
+  void _registerKeyword(BuildContext context, String keyword) {
     final trimmedText = keyword.trim();
     if (trimmedText.isEmpty) {
       return;
     }
-    if (keywords.contains(trimmedText)) {
-      final snackBar = SnackBar(content: Text("키워드가 중복되었습니다."));
+    if (_keywords.contains(trimmedText)) {
+      final snackBar = SnackBar(
+        content: Text("키워드가 중복되었습니다."),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
-    if (keywords.length >= 3) {
-      final snackBar = SnackBar(content: Text("3개 이상 등록할 수 없습니다."));
+    if (_keywords.length >= 3) {
+      final snackBar = SnackBar(
+        content: Text("3개 이상 등록할 수 없습니다."),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
-    if (!keywords.contains(trimmedText)) {
+    if (!_keywords.contains(trimmedText)) {
+      User.setKeywords(_keywords);
       setState(() {
-        keywords.add(trimmedText);
+        _keywords.add(trimmedText);
       });
-      User.setKeywords(keywords);
     }
   }
 }

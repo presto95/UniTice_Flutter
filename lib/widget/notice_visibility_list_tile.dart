@@ -9,6 +9,7 @@ class NoticeVisibilityListTile extends StatefulWidget {
 
 class _NoticeVisibilityListTileState extends State<NoticeVisibilityListTile> {
   bool _isNoticeVisible = false;
+
   String get _visibilityDescription =>
       "공지사항이 ${_isNoticeVisible ? "펼쳐진" : "접혀진"} 상태입니다.";
 
@@ -34,8 +35,8 @@ class _NoticeVisibilityListTileState extends State<NoticeVisibilityListTile> {
       title: Text("공지사항 펼치기"),
       trailing: Switch(
         value: _isNoticeVisible,
-        onChanged: (isOn) {
-          User.setNoticeVisibility(isOn);
+        onChanged: (isOn) async {
+          await User.setNoticeVisibility(isOn);
           setState(() {
             _isNoticeVisible = isOn;
           });

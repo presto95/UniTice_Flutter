@@ -13,10 +13,6 @@ class Seoultech implements UniversityScrapType {
     Category(id: "matters", description: "학사공지"),
     Category(id: "janghak", description: "장학공지"),
     Category(id: "graduate", description: "대학원공지"),
-    // Category(id: "bid", description: "대학입찰"),
-    // Category(id: "recruite", description: "채용정보"),
-    // Category(id: "committee", description: "등록금심의위원회"),
-    // Category(id: "budgetcomm", description: "재정위원회"),
   ];
 
   @override

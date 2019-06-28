@@ -4,7 +4,7 @@ mixin StartUiHelper {
   Widget buildTitleText(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.black,
         fontSize: 32,
         fontWeight: FontWeight.bold,
@@ -15,7 +15,7 @@ mixin StartUiHelper {
   Widget buildSubtitleText(String text) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.black,
         fontSize: 15,
         fontWeight: FontWeight.w500,

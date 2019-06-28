@@ -11,6 +11,7 @@ class NotificationPermissionListTile extends StatefulWidget {
 class _NotificationPermissionListTileState
     extends State<NotificationPermissionListTile> with WidgetsBindingObserver {
   bool _isGranted;
+
   String get _permissionDescription =>
       "알림이 ${_isGranted ? "활성화" : "비활성화"}되어 있습니다.";
 
@@ -72,17 +73,14 @@ class _NotificationPermissionListTileState
   void _setPermissionStatus() async {
     final status =
         await NotificationPermissions.getNotificationPermissionStatus();
-    switch (status) {
-      case PermissionStatus.granted:
-        setState(() {
-          _isGranted = true;
-        });
-        break;
-      default:
-        setState(() {
-          _isGranted = false;
-        });
-        break;
+    if (status == PermissionStatus.granted) {
+      setState(() {
+        _isGranted = true;
+      });
+    } else {
+      setState(() {
+        _isGranted = false;
+      });
     }
   }
 }

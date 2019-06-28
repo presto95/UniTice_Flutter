@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 
 class StartButton extends StatelessWidget {
   final StartButtonType type;
-  final void Function() onPressed;
+  final VoidCallback onPressed;
 
   StartButton({this.type, this.onPressed});
 

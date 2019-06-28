@@ -55,29 +55,26 @@ class Cnu implements UniversityScrapType {
       [String query = ""]) async {
     List<Post> posts = [];
     final url = getPageUrl(category, page, query);
-    try {
-      final document = await ScrapService.shared.request(url);
-      final rows = document.querySelectorAll("tbody > td");
-      final links = document.querySelectorAll("tbody > td.title > a[href]");
-      final numberOfLinks = links.length;
-      for (int index = 0; index < numberOfLinks; ++index) {
-        final referenceIndex = index * 6;
-        final number = rows[referenceIndex].text.trim();
-        final title = rows[referenceIndex + 1].text.trim();
-        final date = rows[referenceIndex + 3].text.trim();
-        final link = links[index].attributes["href"].trim();
-        final isNotice = number.isEmpty ? true : false;
-        final post = Post(
-            number: number.isEmpty ? 0 : int.parse(number),
-            title: title,
-            date: date,
-            link: link,
-            isNotice: isNotice);
-        posts.add(post);
-      }
-      return posts;
-    } catch (error) {
-      throw error;
+    final document = await ScrapService.shared.request(url);
+    final rows = document.querySelectorAll("tbody > td");
+    final links = document.querySelectorAll("tbody > td.title > a[href]");
+    final numberOfLinks = links.length;
+    for (int index = 0; index < numberOfLinks; ++index) {
+      final referenceIndex = index * 6;
+      final number = rows[referenceIndex].text.trim();
+      final title = rows[referenceIndex + 1].text.trim();
+      final date = rows[referenceIndex + 3].text.trim();
+      final link = links[index].attributes["href"].trim();
+      final isNotice = number.isEmpty ? true : false;
+      final post = Post(
+        number: number.isEmpty ? 0 : int.parse(number),
+        title: title,
+        date: date,
+        link: link,
+        isNotice: isNotice,
+      );
+      posts.add(post);
     }
+    return posts;
   }
 }

@@ -9,47 +9,32 @@ import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/post_web_view_page.dart';
 
-class PostList extends StatefulWidget {
+class PostListView extends StatefulWidget {
   final UniversityScrapType universityModel;
   final Category category;
   final List<String> keywords;
 
-  PostList(this.universityModel, this.category, this.keywords);
+  PostListView(this.universityModel, this.category, this.keywords);
 
   @override
-  State<StatefulWidget> createState() => _PostListState();
+  State<StatefulWidget> createState() => _PostListViewState();
 }
 
-class _PostListState extends State<PostList> with RouteAware {
-  final a = AlwaysScrollableScrollPhysics();
-  final b = BouncingScrollPhysics();
+class _PostListViewState extends State<PostListView> with RouteAware {
   final _scrollController = ScrollController();
   bool _isLoading = false;
   bool _isNoticeVisible = false;
   List<Post> _noticePosts = [];
   List<Post> _standardPosts = [];
-  int _page;
+  int _page = 1;
 
   @override
   void initState() {
     super.initState();
-    _page = 1;
     _requestPosts(isInRefresh: false);
     _setNoticeVisibility();
     _scrollController.addListener(() {
-      if (Platform.isIOS) {
-        if (_scrollController.offset >
-                _scrollController.position.maxScrollExtent + 20 &&
-            !_isLoading) {
-          _requestPosts(isInRefresh: false);
-        }
-      } else {
-        if (_scrollController.position.pixels ==
-                _scrollController.position.maxScrollExtent &&
-            !_isLoading) {
-          _requestPosts(isInRefresh: false);
-        }
-      }
+      _addInfiniteScrollBehavior();
     });
   }
 
@@ -64,7 +49,7 @@ class _PostListState extends State<PostList> with RouteAware {
     return Stack(
       children: <Widget>[
         RefreshIndicator(
-          child: _buildPostList(),
+          child: _buildPostListView(),
           onRefresh: () {
             return _requestPosts(isInRefresh: true);
           },
@@ -91,7 +76,7 @@ class _PostListState extends State<PostList> with RouteAware {
     _setNoticeVisibility();
   }
 
-  Widget _buildPostList() {
+  Widget _buildPostListView() {
     final noticePostsLength = _noticePosts.length;
     final standardPostsLength = _standardPosts.length;
     return ListView.builder(
@@ -124,8 +109,9 @@ class _PostListState extends State<PostList> with RouteAware {
             final url =
                 widget.universityModel.getPostUrl(widget.category, post.link);
             await _saveBookmark(post);
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => PostWebViewPage(url)));
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => PostWebViewPage(url),
+            ));
           },
         ),
         Divider(height: 0),
@@ -135,7 +121,7 @@ class _PostListState extends State<PostList> with RouteAware {
 
   Widget _buildNoticeHeader() {
     return Container(
-      padding: EdgeInsets.only(left: 16),
+      padding: const EdgeInsets.only(left: 16),
       color: Theme.of(context).primaryColor,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -176,6 +162,22 @@ class _PostListState extends State<PostList> with RouteAware {
         color: Theme.of(context).primaryColor,
       ),
     );
+  }
+
+  void _addInfiniteScrollBehavior() {
+    if (Platform.isIOS) {
+      if (_scrollController.offset >
+              _scrollController.position.maxScrollExtent + 20 &&
+          !_isLoading) {
+        _requestPosts(isInRefresh: false);
+      }
+    } else {
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          !_isLoading) {
+        _requestPosts(isInRefresh: false);
+      }
+    }
   }
 
   Post _decidePost(int row) {
@@ -228,7 +230,7 @@ class _PostListState extends State<PostList> with RouteAware {
     }
   }
 
-  Future<void> _saveBookmark(Post post) async {
+  void _saveBookmark(Post post) async {
     final provider = BookmarkProvider();
     await provider.open();
     final bookmarks = await provider.readAll() ?? [];

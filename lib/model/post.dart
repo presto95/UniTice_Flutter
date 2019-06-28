@@ -1,6 +1,5 @@
 import 'package:meta/meta.dart';
 
-/// 게시물을 나타낸 모델.
 class Post {
   final int number;
   final String title;
@@ -18,13 +17,13 @@ class Post {
     this.note = "",
   });
 
-  Post.fromMap(Map<String, dynamic> jsonObject)
-      : this.number = jsonObject["number"],
-        this.title = jsonObject["title"],
-        this.date = jsonObject["date"],
-        this.link = jsonObject["link"],
-        this.note = jsonObject["note"],
-        this.isNotice = jsonObject["isNotice"] == 1 ? true : false;
+  Post.fromMap(Map<String, dynamic> map)
+      : this.number = map["number"],
+        this.title = map["title"],
+        this.date = map["date"],
+        this.link = map["link"],
+        this.note = map["note"],
+        this.isNotice = map["isNotice"] == 1 ? true : false;
 
   Map<String, dynamic> toMap() {
     return {

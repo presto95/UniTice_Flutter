@@ -4,8 +4,8 @@ import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/search_page.dart';
-import 'package:unitice/widget/app_bar_title.dart';
-import 'package:unitice/widget/post_list.dart';
+import 'package:unitice/widget/app_bar_title_text.dart';
+import 'package:unitice/widget/post_list_view.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -16,8 +16,6 @@ class _MainPageState extends State<MainPage> with RouteAware {
   UniversityScrapType _universityScrapModel;
   String _universityName;
   List<String> _keywords = [];
-
-  // Life Cycle
 
   @override
   void initState() {
@@ -37,25 +35,8 @@ class _MainPageState extends State<MainPage> with RouteAware {
     return DefaultTabController(
       length: _universityScrapModel.categories.length,
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: AppBarTitle(title: _universityName),
-          bottom: TabBar(
-            indicatorColor: Colors.white,
-            indicatorSize: TabBarIndicatorSize.label,
-            isScrollable: true,
-            tabs: _universityScrapModel.categories
-                .map((category) => Tab(text: category.description))
-                .toList(),
-          ),
-          actions: _buildAppBarActions(context),
-        ),
-        body: TabBarView(
-          children: _universityScrapModel.categories
-              .map((category) =>
-                  PostList(_universityScrapModel, category, _keywords))
-              .toList(),
-        ),
+        appBar: _buildAppBar(),
+        body: _buildTabBarView(),
       ),
     );
   }
@@ -66,14 +47,27 @@ class _MainPageState extends State<MainPage> with RouteAware {
     routeObserver.unsubscribe(this);
   }
 
-  // Route Observing
-
   @override
   void didPopNext() {
     super.didPopNext();
-    // TODO: 학교 변경 / 게시물 다시 불러오기 등 초기화 작업
     _setUniversity();
     _setKeywords();
+  }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      title: AppBarTitleText(_universityName),
+      bottom: TabBar(
+        indicatorColor: Colors.white,
+        indicatorSize: TabBarIndicatorSize.label,
+        isScrollable: true,
+        tabs: _universityScrapModel.categories
+            .map((category) => Tab(text: category.description))
+            .toList(),
+      ),
+      actions: _buildAppBarActions(context),
+    );
   }
 
   List<Widget> _buildAppBarActions(BuildContext context) {
@@ -85,14 +79,24 @@ class _MainPageState extends State<MainPage> with RouteAware {
       IconButton(
         icon: Icon(Icons.search),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) =>
-                SearchPage(_universityScrapModel.categories))),
+              builder: (context) => SearchPage(_universityScrapModel),
+            )),
       ),
       IconButton(
         icon: Icon(Icons.bookmark),
         onPressed: () => Navigator.of(context).pushNamed("/bookmark"),
       ),
     ];
+  }
+
+  Widget _buildTabBarView() {
+    final postListViews = _universityScrapModel.categories
+        .map((category) =>
+            PostListView(_universityScrapModel, category, _keywords))
+        .toList();
+    return TabBarView(
+      children: postListViews,
+    );
   }
 
   void _setUniversity() async {
@@ -105,7 +109,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
     });
   }
 
-  Future _setKeywords() async {
+  void _setKeywords() async {
     final keywords = await User.keywords;
     setState(() {
       _keywords = keywords;

@@ -72,15 +72,7 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
           Expanded(
             child: StartButton(
               type: StartButtonType.confirm,
-              onPressed: () {
-                if (_selectedUniversity == null) {
-                  final snackBar = SnackBar(content: Text("학교를 선택하세요."));
-                  Scaffold.of(context).showSnackBar(snackBar);
-                } else {
-                  RegisterModel.shared.university = _selectedUniversity;
-                  Navigator.of(context).pushNamed("/start/registerKeyword");
-                }
-              },
+              onPressed: () => _registerUniversity(context),
             ),
           ),
         ],
@@ -88,11 +80,23 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
     );
   }
 
+  void _registerUniversity(BuildContext context) {
+    if (_selectedUniversity == null) {
+      final snackBar = SnackBar(
+        content: Text("학교를 선택하세요."),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      RegisterModel.shared.university = _selectedUniversity;
+      Navigator.of(context).pushNamed("/start/registerKeyword");
+    }
+  }
+
   void _makeEmailForm() {
     final email = Email(
       subject: "[다연결] 우리 학교가 목록에 없어요.",
       recipients: const ["yoohan95@gmail.com"],
     );
-    FlutterEmailSender.send(email).then((_) {});
+    FlutterEmailSender.send(email);
   }
 }

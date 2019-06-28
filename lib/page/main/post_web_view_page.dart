@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:unitice/widget/app_bar_title.dart';
+import 'package:unitice/widget/app_bar_title_text.dart';
 import "package:webview_flutter/webview_flutter.dart";
 
 class PostWebViewPage extends StatefulWidget {
@@ -12,8 +12,8 @@ class PostWebViewPage extends StatefulWidget {
 }
 
 class _PostWebViewPageState extends State<PostWebViewPage> {
-  bool _isLoading = true;
   WebView _webView;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _PostWebViewPageState extends State<PostWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle(title: "게시물"),
+        title: AppBarTitleText("게시물"),
       ),
       body: Stack(
         children: <Widget>[
@@ -45,7 +45,9 @@ class _PostWebViewPageState extends State<PostWebViewPage> {
 
   Widget _buildProgressIndicator() {
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
         : Container();
   }
 }

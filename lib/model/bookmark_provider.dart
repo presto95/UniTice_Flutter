@@ -42,9 +42,8 @@ class BookmarkProvider {
         .delete(_databaseName, where: "title = ?", whereArgs: [title]);
   }
 
-  Future<int> update(Post post) async {
-    return await _database.update(_databaseName, post.toMap(),
-        where: "title = ?", whereArgs: [post.title]);
+  Future<int> deleteAll() async {
+    return await _database.delete(_databaseName);
   }
 
   Future close() async => _database.close();

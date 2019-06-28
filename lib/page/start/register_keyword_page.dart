@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
+import 'package:unitice/widget/dismissible_background.dart';
 import 'package:unitice/widget/start_button.dart';
 
 class RegisterKeywordPage extends StatefulWidget {
@@ -10,15 +11,8 @@ class RegisterKeywordPage extends StatefulWidget {
 
 class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     with StartUiHelper {
-  List<String> keywords;
-  String currentKeyword;
-
-  @override
-  void initState() {
-    super.initState();
-    keywords = [];
-    currentKeyword = "";
-  }
+  List<String> _keywords = [];
+  String _currentKeyword = "";
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +31,9 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Builder(builder: (context) => _buildTextFieldRow(context)),
+                    Builder(
+                      builder: (context) => _buildTextFieldRow(context),
+                    ),
                     _buildKeywordsList(),
                   ],
                 ),
@@ -74,10 +70,10 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
               labelText: "키워드 입력",
             ),
             keyboardType: TextInputType.text,
-            onChanged: (text) => currentKeyword = text,
+            onChanged: (text) => _currentKeyword = text,
             onSubmitted: (text) {
               _registerKeyword(context, text);
-              currentKeyword = "";
+              _currentKeyword = "";
               textEditingController.text = null;
             },
           ),
@@ -94,8 +90,8 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
           child: FlatButton(
             child: Text("등록"),
             onPressed: () {
-              _registerKeyword(context, currentKeyword);
-              currentKeyword = "";
+              _registerKeyword(context, _currentKeyword);
+              _currentKeyword = "";
               textEditingController.text = null;
             },
           ),
@@ -105,7 +101,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
   }
 
   Widget _buildKeywordsList() {
-    final registeredKeywords = keywords.map((keyword) {
+    final registeredKeywords = _keywords.map((keyword) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -114,56 +110,15 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    keyword,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
+                _buildKeywordContainer(keyword),
               ],
             ),
-            background: Container(
-              color: Colors.red,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.only(right: 32),
-                    child: Text(
-                      "삭제",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            background: DismissibleBackground(),
             direction: DismissDirection.endToStart,
-            onDismissed: (direction) {
-              if (direction == DismissDirection.endToStart) {
-                setState(() {
-                  keywords.remove(keyword);
-                });
-              }
+            onDismissed: (_) {
+              setState(() {
+                _keywords.remove(keyword);
+              });
             },
           ),
           SizedBox(height: 16),
@@ -175,6 +130,31 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
         padding: const EdgeInsets.only(top: 16),
         child: Column(
           children: registeredKeywords,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildKeywordContainer(String keyword) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 32,
+        vertical: 16,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).primaryColor,
+          style: BorderStyle.solid,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Text(
+        keyword,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 20,
         ),
       ),
     );
@@ -195,7 +175,7 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
               type: StartButtonType.confirm,
               onPressed: () {
                 Navigator.of(context).pushNamed("/start/confirm");
-                RegisterModel.shared.keywords = keywords;
+                RegisterModel.shared.keywords = _keywords;
               },
             ),
           ),
@@ -209,19 +189,23 @@ class _RegisterKeywordPageState extends State<RegisterKeywordPage>
     if (trimmedText.isEmpty) {
       return;
     }
-    if (keywords.contains(trimmedText)) {
-      final snackBar = SnackBar(content: Text("키워드가 중복되었습니다."));
+    if (_keywords.contains(trimmedText)) {
+      final snackBar = SnackBar(
+        content: Text("키워드가 중복되었습니다."),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
-    if (keywords.length >= 3) {
-      final snackBar = SnackBar(content: Text("3개 이상 등록할 수 없습니다."));
+    if (_keywords.length >= 3) {
+      final snackBar = SnackBar(
+        content: Text("3개 이상 등록할 수 없습니다."),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
       return;
     }
-    if (!keywords.contains(trimmedText)) {
+    if (!_keywords.contains(trimmedText)) {
       setState(() {
-        keywords.add(trimmedText);
+        _keywords.add(trimmedText);
       });
     }
   }

@@ -4,7 +4,6 @@ import 'package:unitice/page/entry_page.dart';
 import 'package:unitice/page/main/main_page.dart';
 import 'package:unitice/page/start/register_university_page.dart';
 import 'package:unitice/page/main/bookmark_page.dart';
-import 'package:unitice/page/main/search_page.dart';
 import 'package:unitice/page/main/setting_page.dart';
 import 'package:unitice/page/setting/change_keyword_page.dart';
 import 'package:unitice/page/setting/change_university_page.dart';
