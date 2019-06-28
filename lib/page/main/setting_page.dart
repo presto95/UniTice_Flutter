@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_email_sender/flutter_email_sender.dart";
 import 'package:unitice/widget/app_bar_title.dart';
 import 'package:unitice/widget/notice_visibility_list_tile.dart';
+import 'package:unitice/widget/notification_permission_list_tile.dart';
 
 class SettingPage extends StatelessWidget {
   @override
@@ -35,20 +36,7 @@ class SettingPage extends StatelessWidget {
             () => Navigator.of(context).pushNamed("/setting/changeUniversity")),
         _buildListTileWithDisclosureIndicator("키워드 설정",
             () => Navigator.of(context).pushNamed("/setting/changeKeyword")),
-        _buildListTileWithDisclosureIndicator(
-          "알림 설정",
-          () {},
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Text(
-            "알림이 활성화 / 비활성화되어 있습니다.",
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 13,
-            ),
-          ),
-        ),
+        NotificationPermissionListTile(),
       ],
     );
   }

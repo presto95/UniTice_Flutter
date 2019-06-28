@@ -16,6 +16,8 @@ PODS:
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
+  - system_setting (0.1.1):
+    - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
@@ -27,6 +29,7 @@ DEPENDENCIES:
   - notification_permissions (from `.symlinks/plugins/notification_permissions/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - system_setting (from `.symlinks/plugins/system_setting/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -48,6 +51,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
+  system_setting:
+    :path: ".symlinks/plugins/system_setting/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
@@ -60,6 +65,7 @@ SPEC CHECKSUMS:
   notification_permissions: 179c3b7b8c4d98bb3fe90b550895a32dbfd281f0
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
+  system_setting: a1a38b953c513fe0edc6c2d3ef071cbb208f8859
   webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
 
 PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
