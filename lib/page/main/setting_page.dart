@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter_email_sender/flutter_email_sender.dart";
+import 'package:launch_review/launch_review.dart';
 import 'package:unitice/widget/app_bar_title_text.dart';
 import 'package:unitice/widget/notice_visibility_list_tile.dart';
 import 'package:unitice/widget/notification_permission_list_tile.dart';
@@ -50,7 +51,7 @@ class SettingPage extends StatelessWidget {
         ),
         _buildListTileWithDisclosureIndicator(
           "앱 평가하기",
-          () {},
+          _openStorePage,
         ),
       ],
     );
@@ -68,5 +69,12 @@ class SettingPage extends StatelessWidget {
   void _makeEmailForm() {
     final email = Email(recipients: const ["yoohan95@gmail.com"]);
     FlutterEmailSender.send(email);
+  }
+
+  void _openStorePage() {
+    LaunchReview.launch(
+        writeReview: false,
+        androidAppId: "com.presto.unitice",
+        iOSAppId: "1447871519");
   }
 }
