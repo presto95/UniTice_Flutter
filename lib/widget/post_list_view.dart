@@ -105,10 +105,10 @@ class _PostListViewState extends State<PostListView> with RouteAware {
           title: Text(post.title),
           subtitle: Text(
               post.note.isEmpty ? post.date : post.date + " | " + post.note),
-          onTap: () async {
+          onTap: () {
             final url =
                 widget.universityModel.getPostUrl(widget.category, post.link);
-            await _saveBookmark(post);
+            _saveBookmark(post);
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PostWebViewPage(url),
             ));

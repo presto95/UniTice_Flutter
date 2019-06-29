@@ -3,6 +3,7 @@ import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/start_button.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ConfirmPage extends StatelessWidget with StartUiHelper {
   final university = RegisterModel.shared.university;
@@ -103,6 +104,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
               type: StartButtonType.confirm,
               onPressed: () {
                 _saveInitialInfo().then((_) {
+                  _registerNotification();
                   Navigator.of(context).pushReplacementNamed("/main");
                 });
               },
@@ -116,5 +118,22 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
   Future<void> _saveInitialInfo() async {
     await User.setUniversity(university);
     await User.setKeywords(keywords);
+  }
+
+  void _registerNotification() async {
+    final plugin = FlutterLocalNotificationsPlugin();
+    final initializationSettingsAndroid =
+        AndroidInitializationSettings("app_icon");
+    final initializationSettingIos = IOSInitializationSettings();
+    final initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingIos);
+    plugin.initialize(initializationSettings);
+    final time = Time(9, 0, 0);
+    final androidSpecifics =
+        AndroidNotificationDetails("com.presto.unitice", "unitice", "9am");
+    final iosSpecifics = IOSNotificationDetails();
+    final specifics = NotificationDetails(androidSpecifics, iosSpecifics);
+    await plugin.showDailyAtTime(
+        0, "", "오늘은 무슨 공지사항이 올라왔을까요? 확인해 보세요.", time, specifics);
   }
 }
