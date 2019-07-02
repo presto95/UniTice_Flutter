@@ -40,8 +40,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -54,9 +52,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>itms</string>
-  </array>
 </dict>
 </plist>

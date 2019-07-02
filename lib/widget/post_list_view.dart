@@ -8,6 +8,7 @@ import 'package:unitice/model/post.dart';
 import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/post_web_view_page.dart';
+import "package:url_launcher/url_launcher.dart";
 
 class PostListView extends StatefulWidget {
   final UniversityScrapType universityModel;
@@ -108,15 +109,23 @@ class _PostListViewState extends State<PostListView> with RouteAware {
           onTap: () {
             final url =
                 widget.universityModel.getPostUrl(widget.category, post.link);
+            print(url);
             _saveBookmark(post);
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PostWebViewPage(url),
-            ));
+            _launchUrl(url);
+            // Navigator.of(context).push(MaterialPageRoute(
+            //   builder: (context) => PostWebViewPage(url),
+            // ));
           },
         ),
         Divider(height: 0),
       ],
     );
+  }
+
+  void _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
   }
 
   Widget _buildNoticeHeader() {

@@ -9,7 +9,7 @@ class BookmarkProvider {
   Future open() async {
     final path = await getDatabasesPath() + "$_databaseName.db";
     _database = await openDatabase(path, version: 1,
-        onCreate: (_database, version) async {
+        onCreate: (database, version) async {
       final sql = """
       create table $_databaseName (
         number integer not null,
@@ -20,7 +20,7 @@ class BookmarkProvider {
         isNotice integer not null
       )
       """;
-      await _database.execute(sql);
+      await database.execute(sql);
     });
   }
 

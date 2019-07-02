@@ -6,6 +6,7 @@ import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/widget/start_button.dart';
 import 'package:unitice/widget/university_picker.dart';
+import "package:url_launcher/url_launcher.dart";
 
 class RegisterUniversityPage extends StatefulWidget {
   @override
@@ -41,12 +42,14 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
         buildTitleText("학교 선택"),
         SizedBox(height: 8),
         buildSubtitleText("공지를 받아볼 학교를 선택해 주세요."),
+        SizedBox(height: 8),
         Row(
           children: <Widget>[
             buildSubtitleText("우리 학교가 목록에 없나요?"),
-            FlatButton(
+            SizedBox(width: 8),
+            GestureDetector(
+              onTap: _makeEmailForm,
               child: Text("우리에게 알려주세요!"),
-              onPressed: _makeEmailForm,
             ),
           ],
         ),
@@ -92,11 +95,16 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
     }
   }
 
-  void _makeEmailForm() {
-    final email = Email(
-      subject: "[다연결] 우리 학교가 목록에 없어요.",
-      recipients: const ["yoohan95@gmail.com"],
-    );
-    FlutterEmailSender.send(email);
+  void _makeEmailForm() async {
+    final url =
+        "mailto:" + "yoohan95@gmail.com" + "?subject=[다연결] 우리 학교가 목록에 없어요.";
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+    // final email = Email(
+    //   subject: "[다연결] 우리 학교가 목록에 없어요.",
+    //   recipients: const ["yoohan95@gmail.com"],
+    // );
+    // FlutterEmailSender.send(email);
   }
 }

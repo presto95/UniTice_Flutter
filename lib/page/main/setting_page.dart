@@ -4,6 +4,7 @@ import 'package:launch_review/launch_review.dart';
 import 'package:unitice/widget/app_bar_title_text.dart';
 import 'package:unitice/widget/notice_visibility_list_tile.dart';
 import 'package:unitice/widget/notification_permission_list_tile.dart';
+import "package:url_launcher/url_launcher.dart";
 
 class SettingPage extends StatelessWidget {
   @override
@@ -66,15 +67,20 @@ class SettingPage extends StatelessWidget {
     );
   }
 
-  void _makeEmailForm() {
-    final email = Email(recipients: const ["yoohan95@gmail.com"]);
-    FlutterEmailSender.send(email);
+  void _makeEmailForm() async {
+    final url = "mailto:" + "yoohan95@gmail.com";
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+    // final email = Email(recipients: const ["yoohan95@gmail.com"]);
+    // FlutterEmailSender.send(email);
   }
 
   void _openStorePage() {
     LaunchReview.launch(
-        writeReview: false,
-        androidAppId: "com.presto.unitice",
-        iOSAppId: "1447871519");
+      writeReview: false,
+      androidAppId: "com.presto.unitice",
+      iOSAppId: "1447871519",
+    );
   }
 }
