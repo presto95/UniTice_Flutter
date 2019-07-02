@@ -8,8 +8,8 @@ class StartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String text = type == StartButtonType.confirm ? "확인" : "뒤로";
-    final Color borderColor =
+    final text = type == StartButtonType.confirm ? "확인" : "뒤로";
+    final borderColor =
         type == StartButtonType.confirm ? Colors.blue : Colors.red;
     return Container(
       child: FlatButton(
@@ -28,7 +28,7 @@ class StartButton extends StatelessWidget {
           style: BorderStyle.solid,
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(50),
       ),
     );
   }

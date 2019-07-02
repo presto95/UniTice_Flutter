@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter_email_sender/flutter_email_sender.dart";
 import 'package:launch_review/launch_review.dart';
 import 'package:unitice/widget/app_bar_title_text.dart';
 import 'package:unitice/widget/notice_visibility_list_tile.dart';
@@ -72,8 +71,6 @@ class SettingPage extends StatelessWidget {
     if (await canLaunch(url)) {
       await launch(url);
     }
-    // final email = Email(recipients: const ["yoohan95@gmail.com"]);
-    // FlutterEmailSender.send(email);
   }
 
   void _openStorePage() {

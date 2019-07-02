@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/university_helper.dart';
@@ -26,21 +25,23 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: 40),
-            _buildPageInformationTexts(),
+            Builder(builder: (context) => _buildPageInformationTexts(context)),
             _buildUniversityPickerView(),
-            Builder(builder: (context) => _buildButtonsContainer(context)),
+            Builder(builder: (context) => _buildButtonContainer(context)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPageInformationTexts() {
+  // UI
+
+  Widget _buildPageInformationTexts(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         buildTitleText("학교 선택"),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         buildSubtitleText("공지를 받아볼 학교를 선택해 주세요."),
         SizedBox(height: 8),
         Row(
@@ -48,8 +49,15 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
             buildSubtitleText("우리 학교가 목록에 없나요?"),
             SizedBox(width: 8),
             GestureDetector(
-              onTap: _makeEmailForm,
-              child: Text("우리에게 알려주세요!"),
+              onTap: () => _makeEmailForm(context),
+              child: Text(
+                "우리에게 알려주세요!",
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                ),
+              ),
             ),
           ],
         ),
@@ -67,7 +75,7 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
     );
   }
 
-  Widget _buildButtonsContainer(BuildContext context) {
+  Widget _buildButtonContainer(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 20),
       child: Row(
@@ -83,28 +91,31 @@ class _RegisterUniversityPageState extends State<RegisterUniversityPage>
     );
   }
 
+  // Non-UI
+
   void _registerUniversity(BuildContext context) {
-    if (_selectedUniversity == null) {
+    if (_selectedUniversity != null) {
+      RegisterModel.instance.university = _selectedUniversity;
+      Navigator.of(context).pushNamed("/start/registerKeyword");
+    } else {
       final snackBar = SnackBar(
         content: Text("학교를 선택하세요."),
       );
       Scaffold.of(context).showSnackBar(snackBar);
-    } else {
-      RegisterModel.shared.university = _selectedUniversity;
-      Navigator.of(context).pushNamed("/start/registerKeyword");
     }
   }
 
-  void _makeEmailForm() async {
+  void _makeEmailForm(BuildContext context) async {
     final url =
         "mailto:" + "yoohan95@gmail.com" + "?subject=[다연결] 우리 학교가 목록에 없어요.";
-    if (await canLaunch(url)) {
+    final canLaunchMail = await canLaunch(url);
+    if (canLaunchMail) {
       await launch(url);
+    } else {
+      final snackBar = SnackBar(
+        content: Text("메일 앱을 열 수 없습니다."),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
     }
-    // final email = Email(
-    //   subject: "[다연결] 우리 학교가 목록에 없어요.",
-    //   recipients: const ["yoohan95@gmail.com"],
-    // );
-    // FlutterEmailSender.send(email);
   }
 }

@@ -6,8 +6,8 @@ import 'package:unitice/widget/start_button.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class ConfirmPage extends StatelessWidget with StartUiHelper {
-  final university = RegisterModel.shared.university;
-  final keywords = RegisterModel.shared.keywords;
+  final university = RegisterModel.instance.university;
+  final keywords = RegisterModel.instance.keywords;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         buildTitleText("초기 설정 완료"),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         buildSubtitleText("등록한 정보를 확인해 주세요."),
         buildSubtitleText("나중에 수정할 수 있습니다."),
       ],
@@ -102,11 +102,10 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
           Expanded(
             child: StartButton(
               type: StartButtonType.confirm,
-              onPressed: () {
-                _saveInitialInfo().then((_) {
-                  _registerNotification();
-                  Navigator.of(context).pushReplacementNamed("/main");
-                });
+              onPressed: () async {
+                await _saveInitialInfo();
+                await _registerDailyNotification();
+                Navigator.of(context).pushReplacementNamed("/main");
               },
             ),
           ),
@@ -120,7 +119,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
     await User.setKeywords(keywords);
   }
 
-  void _registerNotification() async {
+  Future<void> _registerDailyNotification() async {
     final plugin = FlutterLocalNotificationsPlugin();
     final initializationSettingsAndroid =
         AndroidInitializationSettings("app_icon");
@@ -130,7 +129,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
     plugin.initialize(initializationSettings);
     final time = Time(9, 0, 0);
     final androidSpecifics =
-        AndroidNotificationDetails("com.presto.unitice", "unitice", "9am");
+        AndroidNotificationDetails("com.presto.UniTice", "unitice", "9am");
     final iosSpecifics = IOSNotificationDetails();
     final specifics = NotificationDetails(androidSpecifics, iosSpecifics);
     await plugin.showDailyAtTime(
