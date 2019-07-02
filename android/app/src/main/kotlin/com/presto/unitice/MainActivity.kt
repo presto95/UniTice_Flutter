@@ -1,4 +1,4 @@
-package presto.com.unitice
+package com.presto.unitice
 
 import android.os.Bundle
 

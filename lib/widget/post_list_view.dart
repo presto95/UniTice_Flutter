@@ -112,9 +112,6 @@ class _PostListViewState extends State<PostListView> with RouteAware {
             print(url);
             _saveBookmark(post);
             _launchUrl(url);
-            // Navigator.of(context).push(MaterialPageRoute(
-            //   builder: (context) => PostWebViewPage(url),
-            // ));
           },
         ),
         Divider(height: 0),
@@ -123,8 +120,14 @@ class _PostListViewState extends State<PostListView> with RouteAware {
   }
 
   void _launchUrl(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (Platform.isIOS) {
+      if (await canLaunch(url)) {
+        await launch(url);
+      }
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PostWebViewPage(url),
+      ));
     }
   }
 
