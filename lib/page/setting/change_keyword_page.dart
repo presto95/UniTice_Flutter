@@ -9,6 +9,7 @@ class ChangeKeywordPage extends StatefulWidget {
 }
 
 class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
+  final _textEditingController = TextEditingController();
   List<String> _keywords = [];
   String _currentKeyword = "";
 
@@ -50,48 +51,37 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
   }
 
   Widget _buildTextFieldRow(BuildContext context) {
-    final textEditingController = TextEditingController();
     return Row(
       children: <Widget>[
         Flexible(
           child: TextField(
-            controller: textEditingController,
+            controller: _textEditingController,
             autofocus: true,
-            decoration: InputDecoration(
-              hintText: "키워드 입력",
-            ),
+            decoration: InputDecoration(hintText: "키워드 입력"),
             keyboardType: TextInputType.text,
             onChanged: (text) => _currentKeyword = text,
             onSubmitted: (text) {
               _registerKeyword(context, text);
-              _currentKeyword = "";
-              textEditingController.text = null;
+              _initializeTextField();
             },
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).primaryColor,
-              style: BorderStyle.solid,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: FlatButton(
-            child: Text("등록"),
-            onPressed: () {
-              _registerKeyword(context, _currentKeyword);
-              _currentKeyword = "";
-              textEditingController.text = null;
-            },
-          ),
+        SizedBox(width: 8),
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () {
+            _registerKeyword(context, _currentKeyword);
+            _initializeTextField();
+          },
         ),
       ],
     );
   }
 
   Widget _buildKeywordsList() {
+    if (_keywords.isEmpty) {
+      return Expanded(child: Center(child: Text("등록된 키워드가 없습니다.")));
+    }
     final registeredKeywords = _keywords.map((keyword) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,28 +91,7 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    keyword,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
+                _buildKeywordContainer(keyword),
               ],
             ),
             background: DismissibleBackground(),
@@ -149,7 +118,32 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
     );
   }
 
-  void _fetchKeywords() async {
+  Widget _buildKeywordContainer(String keyword) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 32,
+        vertical: 16,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).primaryColor,
+          style: BorderStyle.solid,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Text(
+        keyword,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _fetchKeywords() async {
     final keywords = await User.keywords;
     setState(() {
       _keywords = keywords;
@@ -162,17 +156,11 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
       return;
     }
     if (_keywords.contains(trimmedText)) {
-      final snackBar = SnackBar(
-        content: Text("키워드가 중복되었습니다."),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
+      _showSnackBar(context, "키워드가 중복되었습니다.");
       return;
     }
     if (_keywords.length >= 3) {
-      final snackBar = SnackBar(
-        content: Text("3개 이상 등록할 수 없습니다."),
-      );
-      Scaffold.of(context).showSnackBar(snackBar);
+      _showSnackBar(context, "3개 이상 등록할 수 없습니다.");
       return;
     }
     if (!_keywords.contains(trimmedText)) {
@@ -181,5 +169,17 @@ class _ChangeKeywordPageState extends State<ChangeKeywordPage> {
         _keywords.add(trimmedText);
       });
     }
+  }
+
+  void _showSnackBar(BuildContext context, String title) {
+    final snackBar = SnackBar(
+      content: Text(title),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  void _initializeTextField() {
+    _currentKeyword = "";
+    _textEditingController.text = null;
   }
 }
