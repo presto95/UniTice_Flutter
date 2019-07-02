@@ -106,11 +106,10 @@ class _PostListViewState extends State<PostListView> with RouteAware {
           title: Text(post.title),
           subtitle: Text(
               post.note.isEmpty ? post.date : post.date + " | " + post.note),
-          onTap: () {
+          onTap: () async {
             final url =
                 widget.universityModel.getPostUrl(widget.category, post.link);
-            print(url);
-            _saveBookmark(post);
+            await _saveBookmark(post);
             _launchUrl(url);
           },
         ),
@@ -224,41 +223,41 @@ class _PostListViewState extends State<PostListView> with RouteAware {
     _page += 1;
     final noticePosts = posts.where((post) => post.isNotice);
     final standardPosts = posts.where((post) => !post.isNotice);
-    if (mounted) {
-      setState(() {
-        if (isInRefresh) {
-          if (_noticePosts.toString() != noticePosts.toList().toString()) {
-            _noticePosts = noticePosts.toList();
-          }
-          _standardPosts = standardPosts.toList();
-        } else {
-          if (_noticePosts.toString() != noticePosts.toList().toString()) {
-            _noticePosts.addAll(noticePosts);
-          }
-          _standardPosts.addAll(standardPosts);
-        }
-        _isLoading = false;
-      });
+    if (!mounted) {
+      return;
     }
+    setState(() {
+      if (isInRefresh) {
+        if (_noticePosts.toString() != noticePosts.toList().toString()) {
+          _noticePosts = noticePosts.toList();
+        }
+        _standardPosts = standardPosts.toList();
+      } else {
+        if (_noticePosts.toString() != noticePosts.toList().toString()) {
+          _noticePosts.addAll(noticePosts);
+        }
+        _standardPosts.addAll(standardPosts);
+      }
+      _isLoading = false;
+    });
   }
 
-  void _saveBookmark(Post post) async {
+  Future<void> _saveBookmark(Post post) async {
     final provider = BookmarkProvider();
     await provider.open();
     final bookmarks = await provider.readAll() ?? [];
     final url = widget.universityModel.getPostUrl(widget.category, post.link);
-    if (bookmarks.contains((bookmark) => bookmark.url == url)) {
-      return;
+    if (bookmarks.where((bookmark) => bookmark.link == url).isEmpty) {
+      final bookmark = Post(
+        number: post.number,
+        title: post.title,
+        date: post.date,
+        link: url,
+        note: post.note,
+        isNotice: post.isNotice,
+      );
+      await provider.insert(bookmark);
     }
-    final bookmark = Post(
-      number: post.number,
-      title: post.title,
-      date: post.date,
-      link: url,
-      note: post.note,
-      isNotice: post.isNotice,
-    );
-    await provider.insert(bookmark);
     await provider.close();
   }
 }

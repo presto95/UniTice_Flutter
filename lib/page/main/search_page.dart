@@ -198,18 +198,17 @@ class _SearchPageState extends State<SearchPage> {
     await provider.open();
     final bookmarks = await provider.readAll() ?? [];
     final url = widget.universityModel.getPostUrl(_selectedCategory, post.link);
-    if (bookmarks.contains((bookmark) => bookmark.url == url)) {
-      return;
+    if (bookmarks.where((bookmark) => bookmark.link == url).isEmpty) {
+      final bookmark = Post(
+        number: post.number,
+        title: post.title,
+        date: post.date,
+        link: url,
+        note: post.note,
+        isNotice: post.isNotice,
+      );
+      await provider.insert(bookmark);
     }
-    final bookmark = Post(
-      number: post.number,
-      title: post.title,
-      date: post.date,
-      link: url,
-      note: post.note,
-      isNotice: post.isNotice,
-    );
-    await provider.insert(bookmark);
     await provider.close();
   }
 }
