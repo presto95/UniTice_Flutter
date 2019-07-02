@@ -31,17 +31,15 @@ class _NoticeVisibilityListTileState extends State<NoticeVisibilityListTile> {
   }
 
   Widget _buildListTile() {
-    return ListTile(
+    return SwitchListTile(
       title: Text("공지사항 펼치기"),
-      trailing: Switch(
-        value: _isNoticeVisible,
-        onChanged: (isOn) async {
-          await User.setNoticeVisibility(isOn);
-          setState(() {
-            _isNoticeVisible = isOn;
-          });
-        },
-      ),
+      value: _isNoticeVisible,
+      onChanged: (isOn) async {
+        await User.setNoticeVisibility(isOn);
+        setState(() {
+          _isNoticeVisible = isOn;
+        });
+      },
     );
   }
 
