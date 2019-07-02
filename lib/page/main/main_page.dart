@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'package:unitice/main.dart';
 import 'package:unitice/model/university_helper.dart';
 import 'package:unitice/model/university_scrap_type.dart';
@@ -32,11 +33,14 @@ class _MainPageState extends State<MainPage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: _universityScrapModel.categories.length,
-      child: Scaffold(
-        appBar: _buildAppBar(),
-        body: _buildTabBarView(),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: DefaultTabController(
+        length: _universityScrapModel.categories.length,
+        child: Scaffold(
+          appBar: _buildAppBar(),
+          body: _buildTabBarView(),
+        ),
       ),
     );
   }
@@ -55,6 +59,9 @@ class _MainPageState extends State<MainPage> with RouteAware {
   }
 
   Widget _buildAppBar() {
+    final tabs = _universityScrapModel.categories
+        .map((category) => Tab(text: category.description))
+        .toList();
     return AppBar(
       automaticallyImplyLeading: false,
       title: AppBarTitleText(_universityName),
@@ -62,9 +69,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
         indicatorColor: Colors.white,
         indicatorSize: TabBarIndicatorSize.label,
         isScrollable: true,
-        tabs: _universityScrapModel.categories
-            .map((category) => Tab(text: category.description))
-            .toList(),
+        tabs: tabs,
       ),
       actions: _buildAppBarActions(context),
     );
@@ -94,9 +99,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
         .map((category) =>
             PostListView(_universityScrapModel, category, _keywords))
         .toList();
-    return TabBarView(
-      children: postListViews,
-    );
+    return TabBarView(children: postListViews);
   }
 
   void _setUniversity() async {
@@ -114,5 +117,28 @@ class _MainPageState extends State<MainPage> with RouteAware {
     setState(() {
       _keywords = keywords;
     });
+  }
+
+  Future<bool> _onWillPop() {
+    return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("애플리케이션을 종료합니다."),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("확인"),
+                  onPressed: () => SystemChannels.platform
+                      .invokeMethod("SystemNavigator.pop"),
+                ),
+                FlatButton(
+                  child: Text("취소"),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 }
