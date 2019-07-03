@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:unitice/common/start_button_type.dart';
 
 class StartButton extends StatelessWidget {
   final StartButtonType type;
@@ -33,5 +34,3 @@ class StartButton extends StatelessWidget {
     );
   }
 }
-
-enum StartButtonType { confirm, back }

@@ -1,0 +1,1 @@
+enum StartButtonType { confirm, back }

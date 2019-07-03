@@ -1,0 +1,1 @@
+enum KeywordRegisterMode { register, change }

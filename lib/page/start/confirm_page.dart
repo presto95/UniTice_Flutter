@@ -1,13 +1,25 @@
 import "package:flutter/material.dart";
+import 'package:unitice/common/start_button_type.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/widget/start_button.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class ConfirmPage extends StatelessWidget with StartUiHelper {
-  final university = RegisterModel.instance.university;
-  final keywords = RegisterModel.instance.keywords;
+class ConfirmPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _ConfirmPageState();
+}
+
+class _ConfirmPageState extends State<ConfirmPage> with StartUiHelper {
+  String _university = "";
+  List<String> _keywords = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchInitialInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
   }
 
   Widget _buildPresentationContainer() {
-    final presentingKeywords = keywords.isEmpty ? "없음" : keywords.toString();
+    final presentingKeywords = _keywords.isEmpty ? "없음" : _keywords.toString();
     return Flexible(
       child: Center(
         child: Column(
@@ -51,7 +63,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
               children: <Widget>[
                 _buildContentTitleText("학교"),
                 SizedBox(height: 8),
-                _buildContentItemText(university),
+                _buildContentItemText(_university),
               ],
             ),
             Column(
@@ -103,7 +115,7 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
             child: StartButton(
               type: StartButtonType.confirm,
               onPressed: () async {
-                await _saveInitialInfo();
+                await _registerInitialInfo();
                 await _registerDailyNotification();
                 Navigator.of(context).pushReplacementNamed("/main");
               },
@@ -114,9 +126,19 @@ class ConfirmPage extends StatelessWidget with StartUiHelper {
     );
   }
 
-  Future<void> _saveInitialInfo() async {
-    await User.setUniversity(university);
-    await User.setKeywords(keywords);
+  void _fetchInitialInfo() {
+    final registerModel = RegisterModel.instance;
+    final university = registerModel.university;
+    final keywords = registerModel.keywords;
+    setState(() {
+      _university = university;
+      _keywords = keywords;
+    });
+  }
+
+  Future<void> _registerInitialInfo() async {
+    await User.setUniversity(_university);
+    await User.setKeywords(_keywords);
   }
 
   Future<void> _registerDailyNotification() async {

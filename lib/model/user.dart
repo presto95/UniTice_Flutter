@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
-  static final String _universityKey = "university";
-  static final String _keywordsKey = "keywords";
-  static final String _isNoticeVisibleKey = "isNoticeVisible";
+  static final _universityKey = "university";
+  static final _keywordsKey = "keywords";
+  static final _isNoticeVisibleKey = "isNoticeVisible";
 
   static Future<SharedPreferences> get preferences =>
       SharedPreferences.getInstance();

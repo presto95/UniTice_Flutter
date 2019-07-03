@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
+import 'package:unitice/common/start_button_type.dart';
 import 'package:unitice/helper/start_ui_helper.dart';
 import 'package:unitice/model/register_model.dart';
 import 'package:unitice/model/university_helper.dart';

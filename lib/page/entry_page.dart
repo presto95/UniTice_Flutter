@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unitice/model/user.dart';
 
 class EntryPage extends StatelessWidget {
   @override
@@ -13,8 +13,8 @@ class EntryPage extends StatelessWidget {
   }
 
   void _presentMainPage(BuildContext context) async {
-    final preferences = await SharedPreferences.getInstance();
-    if (preferences.getString("university") != null) {
+    final university = await User.university;
+    if (university != null) {
       Navigator.of(context).pushReplacementNamed("/main");
     } else {
       Navigator.of(context).pushReplacementNamed("/start/registerUniversity");

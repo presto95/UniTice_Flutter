@@ -124,16 +124,16 @@ class _MainPageState extends State<MainPage> with RouteAware {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("애플리케이션을 종료합니다."),
+              content: Text("애플리케이션을 종료합니다."),
               actions: <Widget>[
+                FlatButton(
+                  child: Text("취소"),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
                 FlatButton(
                   child: Text("확인"),
                   onPressed: () => SystemChannels.platform
                       .invokeMethod("SystemNavigator.pop"),
-                ),
-                FlatButton(
-                  child: Text("취소"),
-                  onPressed: () => Navigator.of(context).pop(false),
                 ),
               ],
             );
