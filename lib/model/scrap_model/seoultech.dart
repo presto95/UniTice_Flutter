@@ -82,7 +82,7 @@ class Seoultech implements UniversityScrapType {
       [String query = ""]) async {
     List<Post> posts = [];
     final url = getPageUrl(category, page, query);
-    final document = await ScrapService.shared.request(url);
+    final document = await ScrapService.instance.request(url);
     final rows = document.querySelectorAll("tr.body_tr > td");
     final links = document.querySelectorAll("td.tit > a[href]");
     final numberOfLinks = links.length;

@@ -50,9 +50,6 @@ class _PostListViewState extends State<PostListView> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.universityModel);
-    print(widget.category);
-    print(widget.keywords);
     return Stack(
       children: <Widget>[
         RefreshIndicator(

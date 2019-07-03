@@ -3,7 +3,7 @@ import "package:html/parser.dart";
 import "package:html/dom.dart";
 
 class ScrapService {
-  static ScrapService shared = ScrapService();
+  static ScrapService instance = ScrapService();
 
   Future<Document> request(String url) async {
     try {
