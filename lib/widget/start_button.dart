@@ -5,7 +5,7 @@ class StartButton extends StatelessWidget {
   final StartButtonType type;
   final VoidCallback onPressed;
 
-  StartButton({this.type, this.onPressed});
+  StartButton({@required this.type, @required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

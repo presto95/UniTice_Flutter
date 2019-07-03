@@ -9,6 +9,7 @@ import 'package:unitice/model/university_scrap_type.dart';
 import 'package:unitice/model/user.dart';
 import 'package:unitice/page/main/post_web_view_page.dart';
 import "package:url_launcher/url_launcher.dart";
+import "package:highlight_text/highlight_text.dart";
 
 class PostListView extends StatefulWidget {
   final UniversityScrapType universityModel;
@@ -23,6 +24,7 @@ class PostListView extends StatefulWidget {
 
 class _PostListViewState extends State<PostListView> with RouteAware {
   final _scrollController = ScrollController();
+  Map<String, HighlightedWord> _words = {};
   bool _isLoading = false;
   bool _isNoticeVisible = false;
   List<Post> _noticePosts = [];
@@ -32,6 +34,7 @@ class _PostListViewState extends State<PostListView> with RouteAware {
   @override
   void initState() {
     super.initState();
+    _getHighlightedWords();
     _requestPosts(isInRefresh: false);
     _setNoticeVisibility();
     _scrollController.addListener(() {
@@ -47,6 +50,9 @@ class _PostListViewState extends State<PostListView> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.universityModel);
+    print(widget.category);
+    print(widget.keywords);
     return Stack(
       children: <Widget>[
         RefreshIndicator(
@@ -73,6 +79,7 @@ class _PostListViewState extends State<PostListView> with RouteAware {
       _noticePosts = [];
       _standardPosts = [];
     });
+    _getHighlightedWords();
     _requestPosts(isInRefresh: true);
     _setNoticeVisibility();
   }
@@ -208,6 +215,16 @@ class _PostListViewState extends State<PostListView> with RouteAware {
     final isVisible = await User.isNoticeVisible;
     setState(() {
       _isNoticeVisible = isVisible ?? false;
+    });
+  }
+
+  void _getHighlightedWords() {
+    final keywords = widget.keywords;
+    keywords.forEach((keyword) {
+      _words[keyword] = HighlightedWord(
+        textStyle: TextStyle(color: Colors.red),
+        onTap: null,
+      );
     });
   }
 

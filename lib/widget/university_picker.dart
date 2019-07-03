@@ -12,9 +12,8 @@ class UniversityPicker extends StatelessWidget {
     return CupertinoPicker.builder(
       itemBuilder: (context, row) => _buildPickerItem(universityNames[row]),
       childCount: universityNames.length,
-      onSelectedItemChanged: (row) {
-        onSelectedUniversityChanged(universityNames[row]);
-      },
+      onSelectedItemChanged: (row) =>
+          onSelectedUniversityChanged(universityNames[row]),
       itemExtent: 44,
       backgroundColor: Colors.transparent,
       useMagnifier: true,

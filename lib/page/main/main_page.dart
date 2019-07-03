@@ -52,10 +52,10 @@ class _MainPageState extends State<MainPage> with RouteAware {
   }
 
   @override
-  void didPopNext() {
+  void didPopNext() async {
     super.didPopNext();
-    _setUniversity();
-    _setKeywords();
+    await _setUniversity();
+    await _setKeywords();
   }
 
   Widget _buildAppBar() {
@@ -102,7 +102,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
     return TabBarView(children: postListViews);
   }
 
-  void _setUniversity() async {
+  Future<void> _setUniversity() async {
     final universityName = await User.university;
     final university = UniversityHelper.getUniversity(universityName);
     final scrapModel = UniversityHelper.getScrapModel(university);
@@ -112,7 +112,7 @@ class _MainPageState extends State<MainPage> with RouteAware {
     });
   }
 
-  void _setKeywords() async {
+  Future<void> _setKeywords() async {
     final keywords = await User.keywords;
     setState(() {
       _keywords = keywords;
