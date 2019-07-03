@@ -1,11 +1,14 @@
 ![logo](./images/logo.jpeg)
 
 ![Language](https://img.shields.io/badge/language-dart-blue.svg)
-![Platform](https://img.shields.io/badge/platform-flutter-blue.svg)
+![Platform](https://img.shields.io/badge/platform-ios%7Candroid-blue.svg)
+![sdk](https://img.shields.io/badge/sdk-flutter-blue.svg)
 
 # 다연결 : 대학교 공지사항 알리미
 
 ###### Made by Flutter
+
+iOS 네이티브 앱으로 만든 [다연결](https://github.com/presto95/UniTice) 프로젝트의 Flutter를 사용하여 다시 작성하는 프로젝트
 
 ## 프로젝트 기간
 
@@ -14,13 +17,11 @@
 ## 제공하는 기능
 
 - 학교별 공지 확인
-- 키워드 하이라이팅
+- ~~키워드 하이라이팅~~
 
 ## 사용하는 라이브러리
 
-- flutter_email_sender
 - flutter_local_notifications
-- scoped_model
 - shared_preferences
 - sqflite
 - notification_permissions
@@ -28,6 +29,9 @@
 - html
 - webview_flutter
 - launch_review
+- system_setting
+- url_launcher
+- highlight_text
 
 ## 지원 대학교
 
